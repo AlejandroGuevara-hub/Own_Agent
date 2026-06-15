@@ -1,0 +1,4 @@
+APScheduler>=3.10,<4.0
+PyYAML>=6.0,<7.0
+rich>=13.0,<14.0
+pyautogui>=0.9,<1.0

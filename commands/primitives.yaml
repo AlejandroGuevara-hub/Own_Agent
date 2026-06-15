@@ -1,0 +1,193 @@
+primitivas:
+  - id: "abrir_proceso"
+    tipo: "proceso"
+    trigger:
+      palabras_clave: ["abrir"]
+    sched ule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "proceso"
+        objetivo: ""
+        args: []
+
+  - id: "cerrar_proceso"
+    tipo: "funcion"
+    trigger:
+      palabras_clave: ["cerrar"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "funcion"
+        objetivo: "cerrar_proceso"
+        args: []
+
+  - id: "listar_procesos"
+    tipo: "funcion"
+    trigger:
+      palabras_clave: ["listar"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "funcion"
+        objetivo: "listar_procesos"
+        args: []
+
+  - id: "ajustar_volumen"
+    tipo: "funcion"
+    trigger:
+      palabras_clave: ["ajustar"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "funcion"
+        objetivo: "ajustar_volumen"
+        args: []
+
+  - id: "ajustar_brillo"
+    tipo: "funcion"
+    trigger:
+      palabras_clave: ["ajustar"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "funcion"
+        objetivo: "ajustar_brillo"
+        args: []
+
+  - id: "consultar_sistema"
+    tipo: "funcion"
+    trigger:
+      palabras_clave: ["consultar"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "funcion"
+        objetivo: "consultar_sistema"
+        args: []
+
+  - id: "mover_archivo"
+    tipo: "funcion"
+    trigger:
+      palabras_clave: ["mover"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "funcion"
+        objetivo: "mover_archivo"
+        args: []
+
+  - id: "crear_archivo"
+    tipo: "funcion"
+    trigger:
+      palabras_clave: ["crear"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "funcion"
+        objetivo: "crear_archivo"
+        args: []
+
+  - id: "eliminar_archivo"
+    tipo: "funcion"
+    trigger:
+      palabras_clave: ["eliminar"]
+    schedule:
+      hora: null
+      dias: []
+    guard: "confirmar"
+    acciones:
+      - tipo: "funcion"
+        objetivo: "eliminar_archivo"
+        args: []
+
+  - id: "programar_alarma"
+    tipo: "funcion"
+    trigger:
+      palabras_clave: ["programar"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "funcion"
+        objetivo: "programar_alarma"
+        args: []
+
+  - id: "programar_recordatorio"
+    tipo: "funcion"
+    trigger:
+      palabras_clave: ["programar"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "funcion"
+        objetivo: "programar_recordatorio"
+        args: []
+
+  - id: "esperar"
+    tipo: "funcion"
+    trigger:
+      palabras_clave: ["esperar"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "funcion"
+        objetivo: "esperar"
+        args: []
+
+  - id: "notificar"
+    tipo: "funcion"
+    trigger:
+      palabras_clave: ["notificar"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "funcion"
+        objetivo: "notificar"
+        args: []
+
+  - id: "consultar_web"
+    tipo: "funcion"
+    trigger:
+      palabras_clave: ["consultar"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "funcion"
+        objetivo: "consultar_web"
+        args: []
+
+  - id: "abrir_url"
+    tipo: "proceso"
+    trigger:
+      palabras_clave: ["abrir"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "proceso"
+        objetivo: ""
+        args: []
+
+  - id: "abrir_archivo"
+    tipo: "proceso"
+    trigger:
+      palabras_clave: ["abrir"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "proceso"
+        objetivo: ""
+        args: []

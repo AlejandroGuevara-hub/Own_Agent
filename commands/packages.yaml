@@ -1,0 +1,66 @@
+paquetes:
+  - id: "modo_estudio"
+    tipo: "paquete"
+    ejecucion: "instantanea"
+    on_error: "stop"
+    trigger:
+      palabras_clave: ["modo estudio", "estudiar"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "proceso"
+        objetivo: "firefox.exe"
+        args: ["https://notion.so"]
+      - tipo: "proceso"
+        objetivo: "code.exe"
+        args: ["C:/proyectos/mi_proyecto"]
+      - tipo: "proceso"
+        objetivo: "spotify.exe"
+        args: ["spotify:playlist:XYZ"]
+
+  - id: "iniciar_jornada"
+    tipo: "paquete"
+    ejecucion: "instantanea"
+    on_error: "stop"
+    trigger:
+      palabras_clave: ["iniciar jornada", "buenos dias"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "proceso"
+        objetivo: "outlook.exe"
+        args: []
+      - tipo: "proceso"
+        objetivo: "slack.exe"
+        args: []
+      - tipo: "funcion"
+        objetivo: "notificar"
+        args: ["Jornada iniciada", "Bienvenido, que tengas un buen dia", "5"]
+
+  - id: "apagar_todo"
+    tipo: "paquete"
+    ejecucion: "programada"
+    on_error: "stop"
+    trigger:
+      palabras_clave: ["apagar todo", "fin jornada"]
+    schedule:
+      hora: "19:00"
+      dias: ["lun", "mar", "mie", "jue", "vie"]
+    acciones:
+      - tipo: "funcion"
+        objetivo: "notificar"
+        args: ["Cerrando sesion", "Se cerraran las aplicaciones en 10 segundos", "10"]
+      - tipo: "funcion"
+        objetivo: "esperar"
+        args: ["10"]
+      - tipo: "funcion"
+        objetivo: "cerrar_proceso"
+        args: ["outlook.exe"]
+      - tipo: "funcion"
+        objetivo: "cerrar_proceso"
+        args: ["slack.exe"]
+      - tipo: "funcion"
+        objetivo: "cerrar_proceso"
+        args: ["firefox.exe"]
