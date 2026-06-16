@@ -56,10 +56,8 @@ def construir(
 
     if accion_yaml["objetivo"] == "":
         objetivo = tokens[1] if len(tokens) > 1 else ""
-        args = tokens[2:]
     else:
         objetivo = accion_yaml["objetivo"]
-        args = tokens[1:]
 
     accion = Accion(
         tipo=accion_yaml["tipo"],
