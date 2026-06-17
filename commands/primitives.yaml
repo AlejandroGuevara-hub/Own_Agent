@@ -3,7 +3,7 @@ primitivas:
     tipo: "proceso"
     trigger:
       palabras_clave: ["abrir"]
-    sched ule:
+    schedule:
       hora: null
       dias: []
     acciones:

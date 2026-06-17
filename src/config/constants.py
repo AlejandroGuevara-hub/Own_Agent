@@ -1,3 +1,9 @@
+"""Catálogo de verbos reconocidos y sus mapeos a primitivas.
+
+Separado de ``config.py`` para que classifier y builder puedan
+importarlo sin arrastrar dependencias de YAML o rutas de archivos.
+"""
+
 VERBOS: dict[str, set[str]] = {
     "es": {
         "abrir", "cerrar", "listar", "ajustar",

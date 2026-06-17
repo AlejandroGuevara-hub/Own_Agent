@@ -28,6 +28,22 @@ Eliminar la fricción de ejecutar tareas repetitivas manualmente: abrir aplicaci
 - Análisis del sistema (RAM, CPU, batería, red)
 - Editor de paquetes YAML desde el agente
 
+## Documentación asociada
+
+| Archivo | Contenido |
+|---|---|
+| `architecture.md` | Arquitectura, diagramas Mermaid y contratos de datos |
+| `commands.md` | Catálogo completo de comandos y estructura YAML |
+| `modules.md` | Definición de módulos, pseudocódigo y diagrama de clases |
+| `cases.md` | Catálogo de errores y casos borde |
+| `roadmap.md` | Roadmap por fases (1-3) |
+| `docs/glossary.md` | Glosario técnico |
+| `docs/faq.md` | Preguntas frecuentes |
+| `docs/troubleshooting.md` | Solución de problemas comunes |
+| `docs/deployment.md` | Guía de instalación y despliegue |
+| `docs/env-vars.md` | Variables de entorno (actuales y planeadas) |
+| `docs/adr/` | Architecture Decision Records |
+
 ## Restricciones de diseño
 
 - Los archivos YAML son de solo lectura durante una sesión activa.

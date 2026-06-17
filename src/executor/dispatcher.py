@@ -1,3 +1,10 @@
+"""Dispatcher que mapea nombres de funciones internas a sus implementaciones.
+
+Centraliza el registro de funciones disponibles para que el executor
+no tenga que conocerlas individualmente. Escalar implica solo agregar
+una nueva entrada en ``DISPATCHER``.
+"""
+
 from src.executor import functions
 
 

@@ -1,3 +1,9 @@
+"""Itera las acciones de una Intencion y las ejecuta secuencialmente.
+
+Aplica la política **fail-fast**: ante el primer error detiene toda
+la ejecución y retorna el ``ErrorAgente`` inmediatamente.
+"""
+
 from src.models import Intencion, Accion, ErrorAgente
 from src.executor import processes, dispatcher
 

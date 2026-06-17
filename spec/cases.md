@@ -9,7 +9,7 @@ y lo retorna. Nunca imprime directamente. `notifier` es quien lo muestra al usua
 
 ### CMD_VACIO
 ```
-origen:  interpreter / tokenizer
+origen:  interpreter / classifier o builder
 cuándo:  el usuario presiona enter sin escribir nada
 detalle: "No escribiste ningún comando."
 accion:  None
@@ -73,6 +73,20 @@ Si una acción dentro de un paquete genera cualquier `ErrorAgente`:
 4. `notifier` muestra el error al usuario.
 
 ## Flujo de un comando destructivo
+
+```mermaid
+flowchart TD
+    A["executor recibe Accion<br/>con guard: confirmar"] --> B["notifier.confirmar()"]
+    B --> C{"Respuesta"}
+    C -->|"s"| D["Ejecutar acción"]
+    D --> E["Retornar 'OK'"]
+    C -->|"n"| F["Retornar ErrorAgente<br/>ACCION_CANCELADA"]
+    C -->|"otro"| G{"Intentos < 3?"}
+    G -->|"Sí"| B
+    G -->|"No"| F
+```
+
+Texto del flujo:
 
 ```
 executor recibe Accion con guard: confirmar

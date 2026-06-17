@@ -1,5 +1,30 @@
 # Definición de Módulos
 
+## Diagrama de clases (modelos de datos)
+
+```mermaid
+classDiagram
+    class Intencion {
+        +str id
+        +str tipo
+        +str ejecucion
+        +dict | None schedule
+        +list[Accion] acciones
+    }
+    class Accion {
+        +str tipo
+        +str objetivo
+        +list[str] args
+    }
+    class ErrorAgente {
+        +str codigo
+        +str origen
+        +str detalle
+        +str | None accion
+    }
+    Intencion "1" --> "*" Accion : contiene
+```
+
 ## main.py — Orquestador
 
 Coordina el flujo completo. No ejecuta lógica de negocio.
@@ -166,6 +191,7 @@ Nadie más lee archivos YAML directamente.
 def cargar() -> None
 def obtener_paquetes() -> dict
 def obtener_nombres_paquetes() -> set[str]
+def obtener_primitiva(id: str) -> dict | None
 ```
 
 **Nota:** Los YAML son de solo lectura durante una sesión activa.

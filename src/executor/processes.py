@@ -1,10 +1,30 @@
+"""Lanza procesos externos del sistema operativo usando ``subprocess``.
+
+Es el único módulo autorizado para ejecutar ``subprocess.Popen``.
+Ningún otro módulo debe importar ``subprocess`` directamente.
+"""
+
 import subprocess
 
 from src.models import ErrorAgente
 
 
 def lanzar(objetivo: str, args: list[str]) -> str | ErrorAgente:
-    """Lanza ejecutables externos con subprocess."""
+    """Lanza un ejecutable externo con ``subprocess.Popen``.
+
+    No espera a que el proceso termine (modo fire-and-forget).
+
+    Args:
+        objetivo: Nombre o ruta del ejecutable (ej. ``"firefox.exe"``).
+        args: Lista de argumentos de línea de comandos.
+
+    Returns:
+        ``"OK"`` si el proceso se lanzó sin errores.
+
+    Errors:
+        APP_NO_ENCONTRADA: Si el ejecutable no existe o no está en PATH.
+        ERROR_APP: Si ocurre cualquier otro error en el lanzamiento.
+    """
     try:
         subprocess.Popen([objetivo] + args)
         return "OK"
