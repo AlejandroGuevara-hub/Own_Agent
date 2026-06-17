@@ -6,6 +6,7 @@ la ejecución y retorna el ``ErrorAgente`` inmediatamente.
 
 from src.models import Intencion, Accion, ErrorAgente
 from src.executor import processes, dispatcher
+from src.notifier import notifier
 
 
 def ejecutar(intencion: Intencion) -> str | ErrorAgente:
@@ -19,6 +20,13 @@ def ejecutar(intencion: Intencion) -> str | ErrorAgente:
 
 def _ejecutar_accion(accion: Accion) -> str | ErrorAgente:
     """Ejecuta una acción individual según su tipo."""
+    if accion.confirmacion:
+        if not notifier.confirmar(f"¿Confirmas ejecutar '{accion.objetivo}'?"):
+            return ErrorAgente(
+                codigo="ACCION_CANCELADA",
+                origen="executor",
+                detalle="Acción cancelada por el usuario.",
+                accion=accion.objetivo)
     if accion.tipo == "proceso":
         return processes.lanzar(accion.objetivo, accion.args)
     if accion.tipo == "funcion":

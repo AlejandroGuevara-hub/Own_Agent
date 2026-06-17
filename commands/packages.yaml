@@ -13,8 +13,8 @@ paquetes:
         objetivo: "firefox.exe"
         args: ["https://notion.so"]
       - tipo: "proceso"
-        objetivo: "code.exe"
-        args: ["C:/proyectos/mi_proyecto"]
+        objetivo: "C:/Users/diego/AppData/Local/Programs/Microsoft VS Code/code.exe"
+        args: ["C:/Own_Agent/agente-personal"]
       - tipo: "proceso"
         objetivo: "spotify.exe"
         args: ["spotify:playlist:XYZ"]

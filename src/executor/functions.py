@@ -4,6 +4,7 @@ Cada función recibe una lista de argumentos (strings) y retorna
 ``"OK"`` en éxito o un objeto ``ErrorAgente`` en fallo.
 """
 
+import os
 import time
 from ctypes import cast, POINTER
 
@@ -133,19 +134,28 @@ def crear_archivo(args: list[str]) -> str | ErrorAgente:
 
 
 def eliminar_archivo(args: list[str]) -> str | ErrorAgente:
-    """Elimina un archivo del sistema. Requiere confirmación del usuario.
-
-    El comando en YAML debe incluir ``guard: confirmar`` para que
-    ``notifier.confirmar`` se ejecute antes de llamar a esta función.
-
-    Nota: Implementación pendiente (Fase 1). Deberá usar ``os.remove``.
-
-    Args:
-        args: ``[ruta]`` — ruta absoluta del archivo a eliminar.
-
-    Returns:
-        ``"OK"`` (stub — sin implementación real).
-    """
+    if len(args) < 1:
+        return ErrorAgente(
+            codigo="PARAM_INVALIDO",
+            origen="executor/functions",
+            detalle="Parámetros insuficientes para 'eliminar_archivo'",
+            accion="eliminar_archivo")
+    ruta = args[0]
+    try:
+        os.remove(ruta)
+        return "OK"
+    except FileNotFoundError:
+        return ErrorAgente(
+            codigo="RUTA_INVALIDA",
+            origen="executor/functions",
+            detalle=f"La ruta '{ruta}' no existe.",
+            accion="eliminar_archivo")
+    except Exception as e:
+        return ErrorAgente(
+            codigo="ERROR_APP",
+            origen="executor/functions",
+            detalle=f"Error al eliminar archivo: {str(e)}",
+            accion="eliminar_archivo")
 
 
 def programar_alarma(args: list[str]) -> str | ErrorAgente:

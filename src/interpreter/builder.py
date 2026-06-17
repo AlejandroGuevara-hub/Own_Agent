@@ -51,6 +51,35 @@ def construir(
             accion=None,
         )
 
+    if tipo == "paquete":
+        frase_completa = " ".join(tokens)
+        paquetes = config.obtener_paquetes()
+        paquete = paquetes.get(frase_completa)
+
+        if paquete is None:
+            return ErrorAgente(
+                codigo="CMD_DESCONOCIDO",
+                origen="interpreter/builder",
+                detalle=f"Paquete '{frase_completa}' no encontrado.",
+                accion=None)
+
+        acciones = []
+        for accion_yaml in paquete["acciones"]:
+            acciones.append(Accion(
+                tipo=accion_yaml["tipo"],
+                objetivo=accion_yaml["objetivo"],
+                args=accion_yaml.get("args", []),
+                confirmacion=False,
+            ))
+
+        return Intencion(
+            id=paquete["id"],
+            tipo=tipo,
+            ejecucion=ejecucion,
+            schedule=None,
+            acciones=acciones,
+        )
+
     verbo = tokens[0]
 
     if verbo not in VERBOS_A_PRIMITIVA:
@@ -93,10 +122,12 @@ def construir(
     else:
         objetivo = accion_yaml["objetivo"]
 
+    confirmacion = primitiva.get("guard") == "confirmar"
     accion = Accion(
         tipo=accion_yaml["tipo"],
         objetivo=objetivo,
         args=args,
+        confirmacion=confirmacion,
     )
 
     return Intencion(

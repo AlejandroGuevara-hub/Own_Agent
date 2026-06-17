@@ -18,6 +18,7 @@ class Accion:
     tipo: str
     objetivo: str
     args: list[str]
+    confirmacion: bool = False
 
 
 @dataclass

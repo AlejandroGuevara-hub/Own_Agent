@@ -209,9 +209,10 @@ Unidad mínima ejecutable.
 ```python
 @dataclass
 class Accion:
-    tipo: str        # "proceso" | "funcion"
-    objetivo: str    # "firefox.exe" | "ajustar_volumen"
-    args: list[str]  # parámetros en orden
+    tipo: str           # "proceso" | "funcion"
+    objetivo: str       # "firefox.exe" | "ajustar_volumen"
+    args: list[str]     # parámetros en orden
+    confirmacion: bool  # si el YAML declaró guard: confirmar
 ```
 
 ### ErrorAgente

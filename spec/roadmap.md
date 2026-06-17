@@ -10,7 +10,7 @@
 - [ ] `executor` ejecuta las 13 primitivas del catálogo
 - [ ] `scheduler` dispara tareas programadas a la hora correcta
 - [ ] `notifier` muestra todos los errores del catálogo en formato uniforme
-- [ ] Guard clause funcional en `eliminar_archivo`
+- [x] Guard clause funcional en `eliminar_archivo`
 - [ ] Fail-fast funcional en paquetes
 - [ ] Logs generados en `/logs` con timestamp por cada ejecución
 - [ ] Al menos 3 paquetes de ejemplo en `packages.yaml`

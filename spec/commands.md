@@ -9,8 +9,11 @@ id: "string"
 tipo: "primitiva | paquete"
 ejecucion: "instantanea | programada"
 on_error: "stop"               # siempre stop en Fase 1
+guard: null                    # null | "confirmar" — solo en primitivas
 trigger:
   palabras_clave: []           # lista de formas de invocar el comando
+                                # en paquetes, cada elemento puede tener
+                                # múltiples palabras separadas por espacio
 schedule:
   hora: null                   # "HH:MM" si es programada
   dias: []                     # ["lun", "mar"...] si es recurrente
@@ -181,6 +184,15 @@ acciones:
     objetivo: spotify.exe
     args: ["spotify:playlist:XYZ"]
 ```
+
+## Detección de paquetes multi-palabra
+
+Las `palabras_clave` de los paquetes se comparan como frase completa
+(`" ".join(tokens)`), lo que permite triggers multi-palabra
+como `"modo estudio"` sin necesidad de un solo token.
+`classifier` une todos los tokens y verifica primero si la frase
+completa coincide con algún nombre de paquete antes de evaluar
+`tokens[0]` como verbo primitivo.
 
 ## Comandos destructivos
 

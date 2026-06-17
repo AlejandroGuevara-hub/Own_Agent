@@ -17,9 +17,13 @@ accion:  None
 
 ### CMD_DESCONOCIDO
 ```
-origen:  interpreter / classifier
+origen:  interpreter / classifier  |  interpreter / builder
 cuándo:  tokens[0] no está en VERBOS ni en NOMBRES_PAQUETES
+         O la primitiva no está definida en YAML
+         O el paquete no se encuentra en config.obtener_paquetes()
 detalle: "El comando '{token}' no existe."
+         "Primitiva '{id}' no definida en YAML."
+         "Paquete '{frase}' no encontrado."
 accion:  None
 ```
 
@@ -59,7 +63,10 @@ accion:  id de la acción fallida
 ### ACCION_CANCELADA
 ```
 origen:  executor
-cuándo:  el usuario responde "n" en un comando con guard: confirmar
+cuándo:  el usuario responde "n" en un comando con guard: confirmar,
+         o agota los 3 intentos disponibles en notifier.confirmar()
+         El executor detecta accion.confirmacion == True y delega
+         en notifier.confirmar() antes de ejecutar.
 detalle: "Acción cancelada por el usuario."
 accion:  id de la acción cancelada
 ```
