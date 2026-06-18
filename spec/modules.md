@@ -188,16 +188,23 @@ Cada función retorna `str` en éxito o `ErrorAgente` en fallo.
 
 Funciones implementadas actualmente:
 - `ajustar_volumen` — vía `pycaw` (rango 0-100).
-- `notificar` — toast de Windows con `winotify`.
-- `esperar` — `time.sleep(N)`.
+- `ajustar_brillo` — vía `screen_brightness_control` (rango 0-100).
+- `consultar_sistema` — vía `psutil` (ram, cpu, batería, red). Muestra resultado con `notifier`.
+- `cerrar_proceso` — vía `psutil.process_iter` + `terminate()`.
+- `listar_procesos` — vía `psutil.process_iter`, muestra PID y nombre con `notifier`.
+- `mover_archivo` — vía `shutil.move()` (origen → destino).
+- `crear_archivo` — vía `pathlib.Path.touch()`, crea directorios padre automáticamente.
 - `eliminar_archivo` — `os.remove()` con manejo de `FileNotFoundError`.
   Funciona junto con la guard clause en executor: el YAML define
   `guard: confirmar`, builder lo convierte en `confirmacion=True`,
   y executor pide confirmación antes de llamar a `os.remove`.
+- `notificar` — toast de Windows con `winotify`.
+- `esperar` — `time.sleep(N)`.
+- `programar_alarma` — vía `APScheduler` con trigger cron a una hora específica.
+- `programar_recordatorio` — vía `APScheduler` con trigger cron recurrente
+  (`day_of_week`). Acepta días en español (lun,mar,mie,...).
 
-Funciones pendientes (stub): `ajustar_brillo`, `consultar_sistema`,
-`cerrar_proceso`, `listar_procesos`, `mover_archivo`, `crear_archivo`,
-`programar_alarma`, `programar_recordatorio`, `consultar_web`.
+Funciones pendientes (stub): `consultar_web`.
 
 ---
 

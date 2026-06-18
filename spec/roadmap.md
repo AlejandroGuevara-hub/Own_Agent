@@ -7,9 +7,9 @@
 **Criterios de completitud:**
 - [ ] `config` carga YAML al iniciar sin errores
 - [ ] `interpreter` clasifica correctamente primitivas y paquetes
-- [ ] `executor` ejecuta las 13 primitivas del catálogo
+- [x] `executor` ejecuta las 13 primitivas del catálogo
 - [ ] `scheduler` dispara tareas programadas a la hora correcta
-- [ ] `notifier` muestra todos los errores del catálogo en formato uniforme
+- [x] `notifier` muestra todos los errores del catálogo en formato uniforme
 - [x] Guard clause funcional en `eliminar_archivo`
 - [ ] Fail-fast funcional en paquetes
 - [ ] Logs generados en `/logs` con timestamp por cada ejecución
@@ -54,7 +54,7 @@
 **Criterios de completitud:**
 - [ ] Input de voz detectado y convertido a texto correctamente
 - [ ] Output de voz funcional para notificaciones y errores
-- [ ] `consultar_sistema` retorna métricas en tiempo real
+- [x] `consultar_sistema` retorna métricas en tiempo real
 - [ ] Editor de paquetes no requiere editar YAML manualmente
 
 ---
