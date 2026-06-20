@@ -208,6 +208,20 @@ Funciones pendientes (stub): `consultar_web`.
 
 ---
 
+## /logger
+
+Sistema de logs que registra cada acción ejecutada en ``/logs/agente.log``.
+Usa el módulo estándar ``logging``. Es llamado desde ``executor`` después
+de cada ``_ejecutar_accion()``, tanto en éxito como en error.
+
+```python
+def registrar(resultado: str | ErrorAgente, accion: str) -> None
+# formato: [2024-01-15 09:15:00] [INFO] OK - abrir_proceso
+# formato: [2024-01-15 09:15:01] [ERROR] executor/functions - APP_NO_ENCONTRADA: firefox.exe
+```
+
+---
+
 ## /scheduler
 
 Registra y dispara tareas programadas con `APScheduler`.

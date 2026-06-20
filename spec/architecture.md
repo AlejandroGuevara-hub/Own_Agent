@@ -20,6 +20,8 @@ flowchart LR
     D --> E["⏰ scheduler<br/>iniciar/registrar/cancelar"]
     B --> F["🔔 notifier<br/>mostrar()/confirmar()"]
     F --> A
+    B --> L["📝 logger<br/>registrar()"]
+    L -.-> LOG["📁 logs/agente.log"]
     B --> G["⚙️ config<br/>cargar()"]
     G --> H["📁 commands/*.yaml"]
 ```
@@ -31,9 +33,11 @@ También en formato texto como referencia rápida:
                                      ↕
                                [Scheduler]
                                      ↕
-                               [Notifier]  →  [Usuario]
-                                     ↕
-                                [Config]
+                                [Notifier]  →  [Usuario]
+                                      ↕
+                              [Logger]  →  [/logs/agente.log]
+                                      ↕
+                                 [Config]
 ```
 
 ## Flujo completo de ejecución
@@ -44,6 +48,7 @@ sequenceDiagram
     participant M as main.py
     participant I as interpreter
     participant E as executor
+    participant L as logger
     participant N as notifier
     participant C as config
 
@@ -62,16 +67,17 @@ sequenceDiagram
         M->>E: executor.ejecutar(intencion)
         activate E
         loop Por cada acción
-            E->>E: _ejecutar_accion(accion)
-            alt tipo == "proceso"
-                E->>E: processes.lanzar(objetivo, args)
-            else tipo == "funcion"
-                E->>E: dispatcher[objetivo](args)
-            end
-        end
-        E-->>M: "OK" | ErrorAgente
-        deactivate E
-        M->>N: notifier.mostrar(resultado)
+             E->>E: _ejecutar_accion(accion)
+             alt tipo == "proceso"
+                 E->>E: processes.lanzar(objetivo, args)
+             else tipo == "funcion"
+                 E->>E: dispatcher[objetivo](args)
+             end
+             E->>L: logger.registrar(resultado, accion)
+         end
+         E-->>M: "OK" | ErrorAgente
+         deactivate E
+         M->>N: notifier.mostrar(resultado)
         N-->>U: "OK" (verde) | Error (rojo)
     end
 ```
@@ -90,7 +96,11 @@ Texto del flujo:
 9. Por cada accion:
      si tipo == "proceso" → executor.processes lanza subprocess
      si tipo == "funcion" → executor.dispatcher llama función interna
-10. Si alguna acción falla → construye ErrorAgente → retorna a main.py
+10. Antes de ejecutar, si accion.confirmacion es True, executor delega
+     en notifier.confirmar(); si el usuario cancela retorna ACCION_CANCELADA.
+11. executor.logger.registrar() escribe el resultado en /logs/agente.log
+     después de cada acción (tanto éxito como error).
+12. Si alguna acción falla → construye ErrorAgente → retorna a main.py
 11. main.py pasa resultado o error a notifier.mostrar()
 12. notifier formatea y muestra al usuario
 ```

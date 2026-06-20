@@ -7,12 +7,14 @@ la ejecución y retorna el ``ErrorAgente`` inmediatamente.
 from src.models import Intencion, Accion, ErrorAgente
 from src.executor import processes, dispatcher
 from src.notifier import notifier
+from src.logger import logger
 
 
 def ejecutar(intencion: Intencion) -> str | ErrorAgente:
     """Itera las acciones de la Intencion. Detiene en el primer error (fail-fast)."""
     for accion in intencion.acciones:
         resultado = _ejecutar_accion(accion)
+        logger.registrar(resultado, accion.objetivo)
         if isinstance(resultado, ErrorAgente):
             return resultado
     return "OK"
