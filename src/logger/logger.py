@@ -18,6 +18,7 @@ _LOG_FILE = _LOG_DIR / "agente.log"
 _logger = logging.getLogger("agente")
 _logger.setLevel(logging.DEBUG)
 
+_LOG_DIR.mkdir(parents=True, exist_ok=True)
 _file_handler = logging.FileHandler(_LOG_FILE, encoding="utf-8", mode="a")
 _formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 _file_handler.setFormatter(_formatter)

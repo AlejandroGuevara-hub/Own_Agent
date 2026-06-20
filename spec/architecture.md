@@ -98,11 +98,11 @@ Texto del flujo:
      si tipo == "funcion" → executor.dispatcher llama función interna
 10. Antes de ejecutar, si accion.confirmacion es True, executor delega
      en notifier.confirmar(); si el usuario cancela retorna ACCION_CANCELADA.
-11. executor.logger.registrar() escribe el resultado en /logs/agente.log
+11. logger.registrar() escribe el resultado en /logs/agente.log
      después de cada acción (tanto éxito como error).
 12. Si alguna acción falla → construye ErrorAgente → retorna a main.py
-11. main.py pasa resultado o error a notifier.mostrar()
-12. notifier formatea y muestra al usuario
+13. main.py pasa resultado o error a notifier.mostrar()
+14. notifier formatea y muestra al usuario
 ```
 
 ## Estructura de carpetas
@@ -134,6 +134,7 @@ graph TD
     SRC --> SRCS["scheduler/"]
     SRC --> SRCN["notifier/"]
     SRC --> SRCC["config/"]
+    SRC --> SRCL["logger/"]
     SRC --> MODELS["models.py"]
 
     SRCI --> I1["__init__.py"]
@@ -147,6 +148,9 @@ graph TD
     SRCE --> E3["dispatcher.py"]
     SRCE --> E4["functions.py"]
     SRCE --> E5["processes.py"]
+
+    SRCL --> L1["__init__.py"]
+    SRCL --> L2["logger.py"]
 
     CMDS --> P1["primitives.yaml"]
     CMDS --> P2["packages.yaml"]
@@ -175,6 +179,7 @@ Texto de la estructura:
     /scheduler                 ← gestiona tareas programadas
     /notifier                  ← maneja output al usuario
     /config                    ← lee y valida los YAML
+    /logger                    ← registra acciones en /logs/agente.log
     models.py                  ← contratos de datos
 
   /commands                    ← archivos YAML de paquetes y primitivas
@@ -222,7 +227,7 @@ class Accion:
     tipo: str           # "proceso" | "funcion"
     objetivo: str       # "firefox.exe" | "ajustar_volumen"
     args: list[str]     # parámetros en orden
-    confirmacion: bool  # si el YAML declaró guard: confirmar
+    confirmacion: bool  # True si el YAML declaró guard: confirmar (default False)
 ```
 
 ### ErrorAgente

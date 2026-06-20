@@ -5,19 +5,20 @@
 **Objetivo:** agente funcional con comandos de texto predefinidos.
 
 **Criterios de completitud:**
-- [ ] `config` carga YAML al iniciar sin errores
-- [ ] `interpreter` clasifica correctamente primitivas y paquetes
-- [x] `executor` ejecuta las 13 primitivas del catálogo
+- [x] `config` carga YAML al iniciar sin errores
+- [x] `interpreter` clasifica correctamente primitivas y paquetes
+- [x] `executor` ejecuta las 16 primitivas del catálogo
 - [x] `scheduler` dispara tareas programadas a la hora correcta
 - [x] `notifier` muestra todos los errores del catálogo en formato uniforme
 - [x] Guard clause funcional en `eliminar_archivo`
-- [ ] Fail-fast funcional en paquetes
-- [ ] Logs generados en `/logs` con timestamp por cada ejecución
-- [ ] Al menos 3 paquetes de ejemplo en `packages.yaml`
+- [x] Fail-fast funcional en paquetes
+- [x] Logs generados en `/logs` con timestamp por cada ejecución
+- [x] Al menos 3 paquetes de ejemplo en `packages.yaml`
 
 **Stack:**
 - Python 3.11+
-- subprocess, APScheduler, PyYAML, rich, pyautogui, dataclasses
+- subprocess, APScheduler, PyYAML, rich, pyautogui, comtypes, pycaw
+- winotify, screen-brightness-control, psutil, dataclasses
 
 ---
 

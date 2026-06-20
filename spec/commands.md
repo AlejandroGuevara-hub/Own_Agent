@@ -100,7 +100,7 @@ VERBOS = {
 - id: crear_archivo
   tipo: funcion
   objetivo: crear_archivo
-  args: [ruta, extension: txt | md | py]
+  args: [ruta_completa]
   produce: archivo vacío creado | RUTA_INVALIDA
 
 - id: eliminar_archivo

@@ -139,6 +139,7 @@ retorna `ACCION_CANCELADA` sin ejecutar.
 def ejecutar(intencion: Intencion) -> str | ErrorAgente:
     for accion in intencion.acciones:
         resultado = _ejecutar_accion(accion)
+        logger.registrar(resultado, accion.objetivo)
         if isinstance(resultado, ErrorAgente):
             return resultado
     return "OK"
