@@ -12,13 +12,12 @@ from ctypes import cast, POINTER
 
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
-from apscheduler.schedulers.background import BackgroundScheduler
 
 from src.models import ErrorAgente
+from src.scheduler.scheduler import obtener_scheduler
 
 
-_scheduler = BackgroundScheduler()
-_scheduler.start()
+_scheduler = obtener_scheduler()
 
 
 def ajustar_volumen(args: list[str]) -> str | ErrorAgente:

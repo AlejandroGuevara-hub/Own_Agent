@@ -8,7 +8,7 @@
 - [ ] `config` carga YAML al iniciar sin errores
 - [ ] `interpreter` clasifica correctamente primitivas y paquetes
 - [x] `executor` ejecuta las 13 primitivas del catálogo
-- [ ] `scheduler` dispara tareas programadas a la hora correcta
+- [x] `scheduler` dispara tareas programadas a la hora correcta
 - [x] `notifier` muestra todos los errores del catálogo en formato uniforme
 - [x] Guard clause funcional en `eliminar_archivo`
 - [ ] Fail-fast funcional en paquetes

@@ -211,11 +211,15 @@ Funciones pendientes (stub): `consultar_web`.
 ## /scheduler
 
 Registra y dispara tareas programadas con `APScheduler`.
+La instancia única de `BackgroundScheduler` se exporta vía
+`obtener_scheduler()` para que `functions.py` pueda agregar jobs
+directamente desde `programar_alarma` y `programar_recordatorio`.
 
 ```python
 def iniciar() -> None
-def registrar(intencion: Intencion) -> None
+def registrar(intencion: Intencion) -> None  # preparado para uso futuro
 def cancelar(id: str) -> None
+def obtener_scheduler() -> BackgroundScheduler  # exporta la instancia única
 ```
 
 ---
