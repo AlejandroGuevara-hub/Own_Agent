@@ -1,25 +1,30 @@
 """Tokenizador del lenguaje de comandos.
 
-Convierte el texto crudo del usuario en una lista plana de tokens
-separados por espacios en blanco.
+Convierte el texto crudo del usuario en una lista de tokens
+respetando comillas con ``shlex.split()``.
 """
+
+import shlex
 
 
 def dividir(texto: str) -> list[str]:
-    """Divide el texto en tokens usando ``str.split()``.
+    """Divide el texto en tokens usando ``shlex.split()``.
 
-    La tokenización es posicional: el primer token es el verbo o
-    palabra clave, y los siguientes son argumentos.
+    Respeta comillas simples y dobles, permitiendo rutas con
+    espacios como un solo token.
 
     Example:
-        >>> dividir("abrir firefox https://notion.so")
-        ["abrir", "firefox", "https://notion.so"]
+        >>> dividir('abrir "C:/Program Files/Chrome/chrome.exe"')
+        ["abrir", "C:/Program Files/Chrome/chrome.exe"]
 
     Args:
         texto: Línea completa ingresada por el usuario.
 
     Returns:
-        Lista de tokens (strings). Retorna lista vacía si ``texto``
-        está vacío o solo contiene espacios.
+        Lista de tokens (strings). Si el texto está vacío retorna
+        lista vacía. Si falla el parseo con shlex, cae a str.split().
     """
-    return texto.strip().split()
+    try:
+        return shlex.split(texto.strip())
+    except ValueError:
+        return texto.strip().split()

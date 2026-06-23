@@ -26,7 +26,11 @@ def lanzar(objetivo: str, args: list[str]) -> str | ErrorAgente:
         ERROR_APP: Si ocurre cualquier otro error en el lanzamiento.
     """
     try:
-        subprocess.Popen([objetivo] + args)
+        if "firefox" in objetivo.lower() and args:
+            cmd = [objetivo, "--new-tab"] + args
+        else:
+            cmd = [objetivo] + args
+        subprocess.Popen(cmd)
         return "OK"
     except FileNotFoundError:
         return ErrorAgente(

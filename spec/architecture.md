@@ -94,8 +94,9 @@ Texto del flujo:
 7. main.py recibe la Intencion y llama a executor.ejecutar(intencion)
 8. executor itera las acciones del objeto Intencion
 9. Por cada accion:
-     si tipo == "proceso" → executor.processes lanza subprocess
-     si tipo == "funcion" → executor.dispatcher llama función interna
+      si tipo == "proceso" → executor.processes lanza subprocess
+        · si el objetivo contiene "firefox" con args, agrega "--new-tab"
+      si tipo == "funcion" → executor.dispatcher llama función interna
 10. Antes de ejecutar, si accion.confirmacion es True, executor delega
      en notifier.confirmar(); si el usuario cancela retorna ACCION_CANCELADA.
 11. logger.registrar() escribe el resultado en /logs/agente.log

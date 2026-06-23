@@ -74,12 +74,14 @@ def parsear(texto: str) -> Intencion | ErrorAgente:
 ```
 
 ### tokenizer.py
-Divide el texto en tokens (lista de strings).
+Divide el texto en tokens usando `shlex.split()`, que respeta comillas
+simples y dobles. Si el parseo falla (comillas sin cerrar), cae a
+`str.split()`.
 
 ```python
 def dividir(texto: str) -> list[str]
-# entrada:  "abrir firefox https://notion.so"
-# salida:   ["abrir", "firefox", "https://notion.so"]
+# entrada:  'abrir "C:/Program Files/Chrome/chrome.exe" https://youtube.com'
+# salida:   ["abrir", "C:/Program Files/Chrome/chrome.exe", "https://youtube.com"]
 ```
 
 ### classifier.py
@@ -178,9 +180,12 @@ DISPATCHER = {
 
 ### processes.py
 Lanza ejecutables externos con `subprocess`.
+Si el objetivo contiene "firefox" y hay argumentos, inserta
+automáticamente `--new-tab` antes de los args.
 
 ```python
 def lanzar(objetivo: str, args: list[str]) -> str | ErrorAgente
+# "firefox" en objetivo + args → ["firefox.exe", "--new-tab", "url"]
 ```
 
 ### functions.py
