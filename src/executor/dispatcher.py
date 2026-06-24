@@ -10,6 +10,8 @@ from src.executor import functions
 
 DISPATCHER: dict[str, callable] = {
     "ajustar_volumen":   functions.ajustar_volumen,
+    "subir_volumen":     functions.subir_volumen,
+    "bajar_volumen":     functions.bajar_volumen,
     "ajustar_brillo":    functions.ajustar_brillo,
     "consultar_sistema": functions.consultar_sistema,
     "cerrar_proceso":    functions.cerrar_proceso,

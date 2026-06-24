@@ -15,7 +15,8 @@ def parsear(texto: str) -> Intencion | ErrorAgente:
 
     Pipeline interno:
         1. ``tokenizer.dividir(texto)`` → tokens
-        2. ``classifier.clasificar(tokens)`` → (tipo, ejecucion)
+        2. ``classifier.clasificar(tokens, paquetes, texto)`` → (tipo, ejecucion)
+           · Si el comando no es reconocido, cae a LLM (Ollama) como fallback
         3. ``builder.construir(tokens, tipo, ejecucion)`` → Intencion
 
     Si classifier retorna un ErrorAgente, se propaga inmediatamente
@@ -30,7 +31,7 @@ def parsear(texto: str) -> Intencion | ErrorAgente:
     """
     tokens = tokenizer.dividir(texto)
     nombres_paquetes = config.obtener_nombres_paquetes()
-    clasificacion = classifier.clasificar(tokens, nombres_paquetes)
+    clasificacion = classifier.clasificar(tokens, nombres_paquetes, texto)
     if isinstance(clasificacion, ErrorAgente):
         return clasificacion
     tipo, ejecucion = clasificacion

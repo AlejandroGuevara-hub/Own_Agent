@@ -56,6 +56,38 @@ def ajustar_volumen(args: list[str]) -> str | ErrorAgente:
             accion="ajustar_volumen")
 
 
+def subir_volumen(args: list[str]) -> str | ErrorAgente:
+    try:
+        devices = AudioUtilities.GetSpeakers()
+        volume = devices.EndpointVolume
+        actual = round(volume.GetMasterVolumeLevelScalar() * 100)
+        nuevo = min(actual + 20, 100)
+        volume.SetMasterVolumeLevelScalar(nuevo / 100.0, None)
+        return "OK"
+    except Exception as e:
+        return ErrorAgente(
+            codigo="ERROR_APP",
+            origen="executor/functions",
+            detalle=f"Error al subir volumen: {str(e)}",
+            accion="subir_volumen")
+
+
+def bajar_volumen(args: list[str]) -> str | ErrorAgente:
+    try:
+        devices = AudioUtilities.GetSpeakers()
+        volume = devices.EndpointVolume
+        actual = round(volume.GetMasterVolumeLevelScalar() * 100)
+        nuevo = max(actual - 20, 0)
+        volume.SetMasterVolumeLevelScalar(nuevo / 100.0, None)
+        return "OK"
+    except Exception as e:
+        return ErrorAgente(
+            codigo="ERROR_APP",
+            origen="executor/functions",
+            detalle=f"Error al bajar volumen: {str(e)}",
+            accion="bajar_volumen")
+
+
 def ajustar_brillo(args: list[str]) -> str | ErrorAgente:
     if len(args) < 1:
         return ErrorAgente(

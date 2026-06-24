@@ -23,14 +23,15 @@ acciones:
     args: []
 ```
 
-## Verbos primitivos registrados (Fase 1)
+## Verbos primitivos registrados
 
 ```python
 VERBOS = {
     "es": {
         "abrir", "cerrar", "listar", "ajustar",
         "crear", "mover", "eliminar", "programar",
-        "esperar", "notificar", "consultar"
+        "esperar", "notificar", "consultar",
+        "subir", "bajar",
     },
     "en": set()  # vacío hasta Fase 3
 }

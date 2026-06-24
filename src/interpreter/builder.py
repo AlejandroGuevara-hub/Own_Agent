@@ -52,15 +52,15 @@ def construir(
         )
 
     if tipo == "paquete":
-        frase_completa = " ".join(tokens)
+        id_busqueda = " ".join(tokens[1:])
         paquetes = config.obtener_paquetes()
-        paquete = paquetes.get(frase_completa)
+        paquete = paquetes.get(id_busqueda)
 
         if paquete is None:
             return ErrorAgente(
                 codigo="CMD_DESCONOCIDO",
                 origen="interpreter/builder",
-                detalle=f"Paquete '{frase_completa}' no encontrado.",
+                detalle=f"Paquete '{id_busqueda}' no encontrado.",
                 accion=None)
 
         acciones = []

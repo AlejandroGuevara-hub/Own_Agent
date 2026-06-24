@@ -68,7 +68,8 @@ Punto de entrada del módulo. Coordina tokenizer, classifier y builder.
 ```python
 def parsear(texto: str) -> Intencion | ErrorAgente:
     tokens     = tokenizer.dividir(texto)
-    tipo, ejec = classifier.clasificar(tokens)
+    nombres    = config.obtener_nombres_paquetes()
+    tipo, ejec = classifier.clasificar(tokens, nombres, texto)
     intencion  = builder.construir(tokens, tipo, ejec)
     return intencion
 ```
@@ -86,16 +87,20 @@ def dividir(texto: str) -> list[str]
 
 ### classifier.py
 Identifica si el comando es primitiva o paquete, e instantáneo o programado.
-Consulta `VERBOS` y los nombres de paquetes cargados en memoria por `config`.
-La detección de paquetes prioriza la frase completa sobre el primer token.
+Consulta `VERBOS`, los ids de paquetes y, como **fallback**, envía el texto
+a un LLM local (Ollama) para interpretación en lenguaje natural.
+
+Si el LLM traduce exitosamente, los tokens se reemplazan con la
+traducción y se retorna `("primitiva", "instantanea")`.
 
 ```python
-def clasificar(tokens: list[str], nombres_paquetes: set[str]) -> tuple[str, str]
-# retorna: ("primitiva" | "paquete", "instantanea" | "programada")
-# 1. si tokens vacío                     → ErrorAgente(CMD_VACIO)
-# 2. si " ".join(tokens) en paquetes     → ("paquete", "instantanea")
-# 3. si tokens[0] en VERBOS["es"]        → ("primitiva", "instantanea")
-# 4. si ninguno                          → ErrorAgente(CMD_DESCONOCIDO)
+def clasificar(tokens: list[str], nombres_paquetes: set[str], texto_original: str = "") -> tuple[str, str]
+# 1. tokens vacío                        → ErrorAgente(CMD_VACIO)
+# 2. tokens[0] == PREFIJO_PAQUETE        → paquete por id
+# 3. " ".join(tokens) en ids_paquetes    → paquete (compatibilidad)
+# 4. tokens[0] en VERBOS["es"]           → primitiva
+# 5. texto_original → LLM (Ollama)       → primitiva si reconoce
+# 6. ningún caso                         → ErrorAgente(CMD_DESCONOCIDO)
 ```
 
 ### builder.py
@@ -113,8 +118,8 @@ alarma/recordatorio), y pasa el campo `guard` del YAML como
 ```python
 def construir(tokens: list[str], tipo: str, ejecucion: str) -> Intencion | ErrorAgente
 # si tipo == "paquete":
-#   frase = " ".join(tokens)
-#   paquete = config.obtener_paquetes()[frase]
+#   id_busqueda = " ".join(tokens[1:])   ← salta PREFIJO_PAQUETE
+#   paquete = config.obtener_paquetes()[id_busqueda]
 #   acciones = [Accion(...) for accion_yaml in paquete.acciones]
 #   return Intencion(id, tipo, ejecucion, acciones)
 #
@@ -163,6 +168,8 @@ Importa de `processes.py` y `functions.py`.
 ```python
 DISPATCHER = {
     "ajustar_volumen":   functions.ajustar_volumen,
+    "subir_volumen":     functions.subir_volumen,
+    "bajar_volumen":     functions.bajar_volumen,
     "ajustar_brillo":    functions.ajustar_brillo,
     "consultar_sistema": functions.consultar_sistema,
     "cerrar_proceso":    functions.cerrar_proceso,
@@ -194,6 +201,8 @@ Cada función retorna `str` en éxito o `ErrorAgente` en fallo.
 
 Funciones implementadas actualmente:
 - `ajustar_volumen` — vía `pycaw` (rango 0-100).
+- `subir_volumen` — suma 20% al nivel actual vía `pycaw`.
+- `bajar_volumen` — resta 20% al nivel actual vía `pycaw`.
 - `ajustar_brillo` — vía `screen_brightness_control` (rango 0-100).
 - `consultar_sistema` — vía `psutil` (ram, cpu, batería, red). Muestra resultado con `notifier`.
 - `cerrar_proceso` — vía `psutil.process_iter` + `terminate()`.
@@ -228,6 +237,21 @@ def registrar(resultado: str | ErrorAgente, accion: str) -> None
 
 ---
 
+## /llm
+
+Módulo de interpretación de lenguaje natural vía Ollama.
+Actúa como **fallback** del classifier: cuando ningún verbo
+registrado ni id de paquete coincide, envía el texto original
+a un modelo local (`qwen2.5:0.5b` o `llama3.2:3b`) y traduce
+la intención al formato de comandos del agente.
+
+```python
+def interpretar(texto: str) -> str
+# retorna: comando traducido ("abrir firefox.exe") o "desconocido"
+```
+
+---
+
 ## /scheduler
 
 Registra y dispara tareas programadas con `APScheduler`.
@@ -257,7 +281,8 @@ def confirmar(mensaje: str) -> bool   # para comandos destructivos
 
 ## /config
 
-Carga los YAML una vez al iniciar. Los deja en memoria para toda la sesión.
+Carga los YAML una vez al iniciar. Indexa los paquetes por
+``id`` (``_paquetes_por_id``) en vez de por palabras clave.
 Nadie más lee archivos YAML directamente.
 
 ```python

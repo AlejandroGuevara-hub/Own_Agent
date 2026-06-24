@@ -156,6 +156,30 @@ primitivas:
         objetivo: "notificar"
         args: []
 
+  - id: "subir_volumen"
+    tipo: "funcion"
+    trigger:
+      palabras_clave: ["subir"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "funcion"
+        objetivo: "subir_volumen"
+        args: []
+
+  - id: "bajar_volumen"
+    tipo: "funcion"
+    trigger:
+      palabras_clave: ["bajar"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "funcion"
+        objetivo: "bajar_volumen"
+        args: []
+
   - id: "consultar_web"
     tipo: "funcion"
     trigger:

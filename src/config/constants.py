@@ -4,11 +4,14 @@ Separado de ``config.py`` para que classifier y builder puedan
 importarlo sin arrastrar dependencias de YAML o rutas de archivos.
 """
 
+PREFIJO_PAQUETE = "paquete"  # configurable por el usuario en Fase 3
+
 VERBOS: dict[str, set[str]] = {
     "es": {
         "abrir", "cerrar", "listar", "ajustar",
         "crear", "mover", "eliminar", "programar",
         "esperar", "notificar", "consultar",
+        "subir", "bajar",
     },
     "en": set(),
 }
@@ -25,6 +28,8 @@ VERBOS_A_PRIMITIVA: dict[str, str | None] = {
     "esperar":   "esperar",
     "notificar": "notificar",
     "consultar": None,
+    "subir":     "subir_volumen",
+    "bajar":     "bajar_volumen",
 }
 
 VERBOS_AMBIGUOS: dict[str, dict[str, str]] = {

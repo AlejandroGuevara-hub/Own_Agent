@@ -18,7 +18,7 @@
 **Stack:**
 - Python 3.11+
 - subprocess, APScheduler, PyYAML, rich, pyautogui, comtypes, pycaw
-- winotify, screen-brightness-control, psutil, dataclasses
+- winotify, screen-brightness-control, psutil, ollama, dataclasses
 
 ---
 
@@ -27,14 +27,14 @@
 **Objetivo:** el agente entiende texto libre, no solo comandos exactos.
 
 **Nuevas funcionalidades:**
-- Integración con Ollama (LLM local) en `classifier`
-- El LLM interpreta la intención cuando el texto no coincide con verbos registrados
-- Soporte de inglés en `VERBOS["en"]`
+- [x] Integración con Ollama (LLM local) en `classifier`
+- [x] El LLM interpreta la intención cuando el texto no coincide con verbos registrados
+- [ ] Soporte de inglés en `VERBOS["en"]`
 - Comando `recargar config` que recarga YAML sin reiniciar el agente
 - `consultar_web` completo con resultados desde el LLM
 
 **Criterios de completitud:**
-- [ ] `classifier` tiene fallback a LLM cuando no reconoce el comando
+- [x] `classifier` tiene fallback a LLM cuando no reconoce el comando
 - [ ] Verbos en inglés registrados y funcionales
 - [ ] `recargar_config()` en `config` sin reiniciar el scheduler
 - [ ] `consultar_web` retorna respuesta coherente al usuario

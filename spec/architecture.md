@@ -8,6 +8,8 @@ flowchart LR
     B --> C["📝 interpreter<br/>parsear()"]
     C --> C1["tokenizer<br/>dividir()"]
     C1 --> C2["classifier<br/>clasificar()"]
+    C2 -.->|"fallback"| LLM["🧠 llm<br/>interpretar()"]
+    LLM -.->|"traducción"| C2
     C2 --> C3["builder<br/>construir()"]
     C3 --> B
     B --> D["⚙️ executor<br/>ejecutar()"]
@@ -136,6 +138,7 @@ graph TD
     SRC --> SRCN["notifier/"]
     SRC --> SRCC["config/"]
     SRC --> SRCL["logger/"]
+    SRC --> SRLLM["llm/"]
     SRC --> MODELS["models.py"]
 
     SRCI --> I1["__init__.py"]
@@ -152,6 +155,9 @@ graph TD
 
     SRCL --> L1["__init__.py"]
     SRCL --> L2["logger.py"]
+
+    SRLLM --> LLM1["__init__.py"]
+    SRLLM --> LLM2["llm.py"]
 
     CMDS --> P1["primitives.yaml"]
     CMDS --> P2["packages.yaml"]
@@ -181,6 +187,7 @@ Texto de la estructura:
     /notifier                  ← maneja output al usuario
     /config                    ← lee y valida los YAML
     /logger                    ← registra acciones en /logs/agente.log
+    /llm                       ← interpretación LLM local (Ollama)
     models.py                  ← contratos de datos
 
   /commands                    ← archivos YAML de paquetes y primitivas

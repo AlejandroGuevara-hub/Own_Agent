@@ -7,17 +7,16 @@ _COMMANDS_DIR: Path = Path(__file__).resolve().parent.parent.parent / "commands"
 
 _primitivas: list[dict] = []
 _paquetes: list[dict] = []
-_paquetes_por_trigger: dict[str, dict] = {}
+_paquetes_por_id: dict[str, dict] = {}
 _nombres_paquetes: set[str] = set()
 
 
 def cargar() -> None:
     """Carga todos los archivos YAML de ``/commands`` en memoria.
 
-    Lee ``primitives.yaml`` y ``packages.yaml``, construye los índices
-    ``_paquetes_por_trigger`` y ``_nombres_paquetes`` para búsqueda
-    rápida por palabra clave. Esta función se invoca una sola vez al
-    iniciar el agente.
+    Lee ``primitives.yaml`` y ``packages.yaml``, construye el índice
+    ``_paquetes_por_id`` para búsqueda rápida por id de paquete.
+    Esta función se invoca una sola vez al iniciar el agente.
 
     Raises:
         FileNotFoundError: Si alguno de los archivos YAML no existe.
@@ -34,31 +33,31 @@ def cargar() -> None:
     with open(packages_path, encoding="utf-8") as f:
         data = yaml.safe_load(f)
     _paquetes.clear()
-    _paquetes_por_trigger.clear()
+    _paquetes_por_id.clear()
     _nombres_paquetes.clear()
 
     for pkg in data.get("paquetes", []):
         _paquetes.append(pkg)
-        for palabra in pkg.get("trigger", {}).get("palabras_clave", []):
-            _paquetes_por_trigger[palabra] = pkg
-            _nombres_paquetes.add(palabra)
+        pkg_id = pkg["id"]
+        _paquetes_por_id[pkg_id] = pkg
+        _nombres_paquetes.add(pkg_id)
 
 
 def obtener_paquetes() -> dict:
-    """Retorna copia del índice ``palabra_clave → paquete``.
+    """Retorna copia del índice ``id → paquete``.
 
     Returns:
-        Diccionario donde cada clave es una palabra clave registrada
+        Diccionario donde cada clave es el id del paquete
         y su valor es el dict completo del paquete YAML.
     """
-    return dict(_paquetes_por_trigger)
+    return dict(_paquetes_por_id)
 
 
 def obtener_nombres_paquetes() -> set[str]:
-    """Retorna copia del conjunto de palabras clave de paquetes.
+    """Retorna copia del conjunto de ids de paquetes.
 
     Returns:
-        Set con todas las palabras clave que disparan paquetes.
+        Set con todos los ids de paquetes cargados.
     """
     return set(_nombres_paquetes)
 
