@@ -21,15 +21,22 @@ abrir, cerrar, listar, ajustar, crear, mover, eliminar,
 programar, esperar, notificar, consultar, subir, bajar
 
 EJEMPLOS:
-"oye abre firefox"         → abrir firefox.exe
-"pon el volumen al 50"     -> ajustar volumen 50
-"cierra el navegador"      -> cerrar firefox.exe
-"muéstrame los procesos"   -> listar
-"sube el volumen"          -> subir volumen
-"baja el volumen"          -> bajar volumen
-"sube el sonido"           -> subir volumen
-"baja el sonido"           -> bajar volumen
-"no entiendo esto"         -> DESCONOCIDO"""
+"abre firefox"              → abrir firefox.exe
+"abre vs code"              → abrir code.exe
+"abre el navegador"         → abrir firefox.exe
+"abre chrome"               → abrir chrome.exe
+"abre el explorador"        → abrir explorer.exe
+"abre spotify"              → abrir spotify.exe
+"abre youtube"              → abrir firefox.exe https://youtube.com
+"oye abre firefox"          → abrir firefox.exe
+"pon el volumen al 50"      -> ajustar volumen 50
+"cierra el navegador"       -> cerrar firefox.exe
+"muéstrame los procesos"    -> listar
+"sube el volumen"           -> subir volumen
+"baja el volumen"           -> bajar volumen
+"sube el sonido"            -> subir volumen
+"baja el sonido"            -> bajar volumen
+"no entiendo esto"          -> DESCONOCIDO"""
 
 
 def interpretar(texto: str) -> str:
