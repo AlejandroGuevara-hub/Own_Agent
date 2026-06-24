@@ -34,6 +34,6 @@ def parsear(texto: str) -> Intencion | ErrorAgente:
     clasificacion = classifier.clasificar(tokens, nombres_paquetes, texto)
     if isinstance(clasificacion, ErrorAgente):
         return clasificacion
-    tipo, ejecucion = clasificacion
-    intencion = builder.construir(tokens, tipo, ejecucion)
+    tipo, ejecucion, tokens_finales = clasificacion
+    intencion = builder.construir(tokens_finales, tipo, ejecucion)
     return intencion

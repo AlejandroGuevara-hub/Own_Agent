@@ -27,7 +27,8 @@ EJEMPLOS:
 "abre chrome"               → abrir chrome.exe
 "abre el explorador"        → abrir explorer.exe
 "abre spotify"              → abrir spotify.exe
-"abre youtube"              → abrir firefox.exe https://youtube.com
+"abre youtube en firefox"    → abrir firefox.exe https://youtube.com
+"abre youtube"               → abrir firefox.exe https://youtube.com
 "oye abre firefox"          → abrir firefox.exe
 "pon el volumen al 50"      -> ajustar volumen 50
 "cierra el navegador"       -> cerrar firefox.exe
