@@ -506,3 +506,29 @@ def consultar_web(args: list[str]) -> str | ErrorAgente:
     Returns:
         ``"OK"`` (stub — sin implementación real).
     """
+
+
+def recargar_config(args: list[str]) -> str | ErrorAgente:
+    """Recarga la configuración YAML y reinicia el scheduler.
+
+    Args:
+        args: Sin parámetros.
+
+    Returns:
+        ``"OK"`` si la recarga se completó correctamente.
+
+    Errors:
+        ERROR_APP: Si ocurre un error al recargar.
+    """
+    try:
+        from src.config import config
+        from src.scheduler import scheduler
+        scheduler.reiniciar()
+        config.recargar()
+        return "OK"
+    except Exception as e:
+        return ErrorAgente(
+            codigo="ERROR_APP",
+            origen="executor/functions",
+            detalle=f"Error al recargar config: {str(e)}",
+            accion="recargar_config")

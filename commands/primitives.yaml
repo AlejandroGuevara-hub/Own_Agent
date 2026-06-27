@@ -215,3 +215,15 @@ primitivas:
       - tipo: "proceso"
         objetivo: ""
         args: []
+
+  - id: "recargar_config"
+    tipo: "funcion"
+    trigger:
+      palabras_clave: ["recargar"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "funcion"
+        objetivo: "recargar_config"
+        args: []

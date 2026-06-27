@@ -75,3 +75,15 @@ def obtener_primitiva(id: str) -> dict | None:
         if p.get("id") == id:
             return p
     return None
+
+
+def recargar() -> None:
+    """Recarga todos los YAML de ``/commands`` sin reiniciar el agente.
+
+    Limpia los índices actuales y vuelve a llamar a ``cargar()``.
+    """
+    global _primitivas, _paquetes_por_id, _nombres_paquetes
+    _primitivas.clear()
+    _paquetes_por_id.clear()
+    _nombres_paquetes.clear()
+    cargar()

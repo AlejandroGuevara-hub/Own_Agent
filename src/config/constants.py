@@ -11,7 +11,7 @@ VERBOS: dict[str, set[str]] = {
         "abrir", "cerrar", "listar", "ajustar",
         "crear", "mover", "eliminar", "programar",
         "esperar", "notificar", "consultar",
-        "subir", "bajar",
+        "subir", "bajar", "recargar",
     },
     "en": set(),
 }
@@ -30,6 +30,7 @@ VERBOS_A_PRIMITIVA: dict[str, str | None] = {
     "consultar": None,
     "subir":     "subir_volumen",
     "bajar":     "bajar_volumen",
+    "recargar":  "recargar_config",
 }
 
 VERBOS_AMBIGUOS: dict[str, dict[str, str]] = {

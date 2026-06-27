@@ -46,6 +46,19 @@ def cancelar(id: str) -> None:
         pass
 
 
+def reiniciar() -> None:
+    """Detiene el scheduler actual y crea uno nuevo.
+
+    Usado por ``recargar_config`` para que las tareas programadas
+    puedan recargarse con la configuración actualizada.
+    """
+    global _scheduler
+    if _scheduler.running:
+        _scheduler.shutdown(wait=False)
+    _scheduler = BackgroundScheduler()
+    _scheduler.start()
+
+
 def obtener_scheduler() -> BackgroundScheduler:
     """Retorna la instancia única del BackgroundScheduler.
 

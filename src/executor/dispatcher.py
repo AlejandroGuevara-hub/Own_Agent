@@ -24,4 +24,5 @@ DISPATCHER: dict[str, callable] = {
     "esperar":           functions.esperar,
     "notificar":         functions.notificar,
     "consultar_web":     functions.consultar_web,
+    "recargar_config":   functions.recargar_config,
 }

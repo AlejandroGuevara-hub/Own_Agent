@@ -18,7 +18,7 @@ FORMATO DE RESPUESTA (obligatorio):
 
 VERBOS DISPONIBLES (elige solo uno):
 abrir, cerrar, listar, ajustar, crear, mover, eliminar,
-programar, esperar, notificar, consultar, subir, bajar
+programar, esperar, notificar, consultar, subir, bajar, recargar
 
 EJEMPLOS:
 "abre firefox"              → abrir firefox.exe
@@ -37,7 +37,9 @@ EJEMPLOS:
 "baja el volumen"           -> bajar volumen
 "sube el sonido"            -> subir volumen
 "baja el sonido"            -> bajar volumen
-"no entiendo esto"          -> DESCONOCIDO"""
+"no entiendo esto"          -> DESCONOCIDO
+"recarga la config"         -> recargar config
+"recarga config"            -> recargar config"""
 
 
 def interpretar(texto: str) -> str:
