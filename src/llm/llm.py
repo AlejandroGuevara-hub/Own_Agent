@@ -7,6 +7,8 @@ formato de comandos del agente.
 
 import ollama
 
+_cache: dict[str, str] = {}
+
 SYSTEM_PROMPT = """Eres un intérprete de comandos para un agente de automatización Windows.
 El usuario escribió un comando en lenguaje natural. Tradúcelo al formato exacto del sistema.
 
@@ -45,6 +47,9 @@ EJEMPLOS:
 def interpretar(texto: str) -> str:
     """Envía el texto del usuario al LLM local y retorna la traducción.
 
+    Los resultados se cachean por clave normalizada (minúsculas + strip)
+    para evitar llamadas repetidas al mismo texto.
+
     Args:
         texto: Texto libre del usuario (ej. ``"abre el navegador"``).
 
@@ -52,6 +57,10 @@ def interpretar(texto: str) -> str:
         Comando traducido (ej. ``"abrir firefox.exe"``), o
         ``"desconocido"`` si el LLM no pudo interpretarlo.
     """
+    clave = texto.lower().strip()
+    if clave in _cache:
+        return _cache[clave]
+
     response = ollama.chat(
         model="llama3.2:3b",
         messages=[
@@ -59,4 +68,6 @@ def interpretar(texto: str) -> str:
             {"role": "user", "content": texto},
         ],
     )
-    return response["message"]["content"].strip().lower()
+    resultado = response["message"]["content"].strip().lower()
+    _cache[clave] = resultado
+    return resultado
