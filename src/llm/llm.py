@@ -40,8 +40,17 @@ EJEMPLOS:
 "sube el sonido"            -> subir volumen
 "baja el sonido"            -> bajar volumen
 "no entiendo esto"          -> DESCONOCIDO
+"hazme una alarma para las 08:31"         → programar alarma 08:31 alarma
+"ponme una alarma a las 9"                → programar alarma 09:00 alarma
+"recuérdame algo a las 10:30"             → programar recordatorio 10:30 lun,mar,mie,jue,vie mensaje
+"programa una alarma para las 08:31"      → programar alarma 08:31 alarma
+"programa un recordatorio para las 08:32" → programar recordatorio 08:32 lun,mar,mie,jue,vie mensaje
 "recarga la config"         -> recargar config
-"recarga config"            -> recargar config"""
+"recarga config"            -> recargar config
+"creame un archivo hola.txt en C:/carpeta"     → crear C:/carpeta/hola.txt
+"crea un archivo llamado test.py en C:/codigo" → crear C:/codigo/test.py
+"crea el archivo notas.txt en el escritorio"   → crear C:/Users/diego/Desktop/notas.txt
+"creame un archivo"                            → DESCONOCIDO"""
 
 
 def interpretar(texto: str) -> str:
@@ -61,13 +70,16 @@ def interpretar(texto: str) -> str:
     if clave in _cache:
         return _cache[clave]
 
-    response = ollama.chat(
-        model="llama3.2:3b",
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": texto},
-        ],
-    )
-    resultado = response["message"]["content"].strip().lower()
-    _cache[clave] = resultado
-    return resultado
+    try:
+        response = ollama.chat(
+            model="llama3.2:3b",
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": texto},
+            ],
+        )
+        resultado = response["message"]["content"].strip().lower()
+        _cache[clave] = resultado
+        return resultado
+    except Exception:
+        return "desconocido"

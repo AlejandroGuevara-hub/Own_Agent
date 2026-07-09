@@ -67,22 +67,23 @@ Punto de entrada del módulo. Coordina tokenizer, classifier y builder.
 
 ```python
 def parsear(texto: str) -> Intencion | ErrorAgente:
-    tokens     = tokenizer.dividir(texto)
-    nombres    = config.obtener_nombres_paquetes()
-    tipo, ejec = classifier.clasificar(tokens, nombres, texto)
-    intencion  = builder.construir(tokens, tipo, ejec)
+    tokens          = tokenizer.dividir(texto)
+    nombres         = config.obtener_nombres_paquetes()
+    tipo, ejec, toks = classifier.clasificar(tokens, nombres, texto)
+    intencion       = builder.construir(toks, tipo, ejec)
     return intencion
 ```
 
 ### tokenizer.py
 Divide el texto en tokens usando `shlex.split()`, que respeta comillas
-simples y dobles. Si el parseo falla (comillas sin cerrar), cae a
-`str.split()`.
+simples y dobles. Antes de pasar a `shlex.split()` normaliza las barras
+invertidas `\` a barras normales `/` para evitar errores con rutas Windows.
+Si el parseo falla (comillas sin cerrar), cae a `str.split()`.
 
 ```python
 def dividir(texto: str) -> list[str]
-# entrada:  'abrir "C:/Program Files/Chrome/chrome.exe" https://youtube.com'
-# salida:   ["abrir", "C:/Program Files/Chrome/chrome.exe", "https://youtube.com"]
+# entrada:  'abrir "C:\Program Files\Chrome\chrome.exe"'
+# salida:   ["abrir", "C:/Program Files/Chrome/chrome.exe"]
 ```
 
 ### classifier.py
@@ -90,16 +91,18 @@ Identifica si el comando es primitiva o paquete, e instantáneo o programado.
 Consulta `VERBOS`, los ids de paquetes y, como **fallback**, envía el texto
 a un LLM local (Ollama) para interpretación en lenguaje natural.
 
-Si el LLM traduce exitosamente, los tokens se reemplazan con la
-traducción y se retorna `("primitiva", "instantanea")`.
+Si el LLM traduce exitosamente, retorna `("primitiva", "instantanea", tokens_llm)`
+con los tokens traducidos como tercer elemento. El builder recibe estos tokens
+en lugar de los originales. Si el LLM no reconoce o falla (try/except), retorna
+`ErrorAgente`.
 
 ```python
-def clasificar(tokens: list[str], nombres_paquetes: set[str], texto_original: str = "") -> tuple[str, str]
+def clasificar(tokens: list[str], nombres_paquetes: set[str], texto_original: str = "") -> tuple[str, str, list[str]] | ErrorAgente
 # 1. tokens vacío                        → ErrorAgente(CMD_VACIO)
 # 2. tokens[0] == PREFIJO_PAQUETE        → paquete por id
 # 3. " ".join(tokens) en ids_paquetes    → paquete (compatibilidad)
 # 4. tokens[0] en VERBOS["es"]           → primitiva
-# 5. texto_original → LLM (Ollama)       → primitiva si reconoce
+# 5. texto_original → LLM (Ollama)       → primitiva con tokens_llm si reconoce
 # 6. ningún caso                         → ErrorAgente(CMD_DESCONOCIDO)
 ```
 
@@ -182,6 +185,7 @@ DISPATCHER = {
     "esperar":           functions.esperar,
     "notificar":         functions.notificar,
     "consultar_web":     functions.consultar_web,
+    "recargar_config":   functions.recargar_config,
 }
 ```
 
@@ -189,6 +193,7 @@ DISPATCHER = {
 Lanza ejecutables externos con `subprocess`.
 Si el objetivo contiene "firefox" y hay argumentos, inserta
 automáticamente `--new-tab` antes de los args.
+No espera a que el proceso termine (fire-and-forget).
 
 ```python
 def lanzar(objetivo: str, args: list[str]) -> str | ErrorAgente
@@ -197,7 +202,8 @@ def lanzar(objetivo: str, args: list[str]) -> str | ErrorAgente
 
 ### functions.py
 Implementa todas las funciones internas del agente.
-Cada función retorna `str` en éxito o `ErrorAgente` en fallo.
+Cada función recibe una lista de strings y retorna
+`str` en éxito o `ErrorAgente` en fallo.
 
 Funciones implementadas actualmente:
 - `ajustar_volumen` — vía `pycaw` (rango 0-100).
@@ -206,6 +212,7 @@ Funciones implementadas actualmente:
 - `ajustar_brillo` — vía `screen_brightness_control` (rango 0-100).
 - `consultar_sistema` — vía `psutil` (ram, cpu, batería, red). Muestra resultado con `notifier`.
 - `cerrar_proceso` — vía `psutil.process_iter` + `terminate()`.
+  Captura `NoSuchProcess` (continúa) y `TimeoutExpired` (fuerza `kill()`).
 - `listar_procesos` — vía `psutil.process_iter`, muestra PID y nombre con `notifier`.
 - `mover_archivo` — vía `shutil.move()` (origen → destino).
 - `crear_archivo` — vía `pathlib.Path.touch()`, crea directorios padre automáticamente.
@@ -214,10 +221,14 @@ Funciones implementadas actualmente:
   `guard: confirmar`, builder lo convierte en `confirmacion=True`,
   y executor pide confirmación antes de llamar a `os.remove`.
 - `notificar` — toast de Windows con `winotify`.
+  Todos los argumentos son opcionales: titulo por defecto "Agente Personal",
+  mensaje "Hola mundo", duración "short".
 - `esperar` — `time.sleep(N)`.
 - `programar_alarma` — vía `APScheduler` con trigger cron a una hora específica.
 - `programar_recordatorio` — vía `APScheduler` con trigger cron recurrente
   (`day_of_week`). Acepta días en español (lun,mar,mie,...).
+- `recargar_config` — detiene el scheduler, crea uno nuevo, y recarga los YAML
+  desde disco llamando a `config.recargar()` y `scheduler.reiniciar()`.
 
 Funciones pendientes (stub): `consultar_web`.
 
@@ -242,12 +253,24 @@ def registrar(resultado: str | ErrorAgente, accion: str) -> None
 Módulo de interpretación de lenguaje natural vía Ollama.
 Actúa como **fallback** del classifier: cuando ningún verbo
 registrado ni id de paquete coincide, envía el texto original
-a un modelo local (`qwen2.5:0.5b` o `llama3.2:3b`) y traduce
-la intención al formato de comandos del agente.
+a un modelo local (`llama3.2:3b`) y traduce la intención al
+formato de comandos del agente.
+
+Incluye un caché en memoria (`_cache: dict[str, str]`) indexado
+por texto normalizado (minúsculas + strip). Si la misma consulta
+se repite, retorna la traducción cacheada sin llamar a Ollama.
+
+La llamada a `ollama.chat()` está envuelta en un try/except. Si
+Ollama no está disponible o falla, retorna `"desconocido"`.
 
 ```python
+_cache: dict[str, str] = {}
 def interpretar(texto: str) -> str
-# retorna: comando traducido ("abrir firefox.exe") o "desconocido"
+# 1. clave = texto.lower().strip()
+# 2. si clave en _cache → retorna _cache[clave]
+# 3. llama a ollama.chat() con SYSTEM_PROMPT
+# 4. guarda resultado en _cache y lo retorna
+# 5. si Exception → retorna "desconocido"
 ```
 
 ---
@@ -259,10 +282,15 @@ La instancia única de `BackgroundScheduler` se exporta vía
 `obtener_scheduler()` para que `functions.py` pueda agregar jobs
 directamente desde `programar_alarma` y `programar_recordatorio`.
 
+Incluye `reiniciar()` que detiene el scheduler actual y crea uno
+nuevo, usado por `recargar_config()` para refrescar tareas
+programadas sin reiniciar todo el agente.
+
 ```python
 def iniciar() -> None
 def registrar(intencion: Intencion) -> None  # preparado para uso futuro
 def cancelar(id: str) -> None
+def reiniciar() -> None  # shutdown + new BackgroundScheduler + start
 def obtener_scheduler() -> BackgroundScheduler  # exporta la instancia única
 ```
 
@@ -281,17 +309,22 @@ def confirmar(mensaje: str) -> bool   # para comandos destructivos
 
 ## /config
 
-Carga los YAML una vez al iniciar. Indexa los paquetes por
+Carga los YAML al iniciar. Indexa los paquetes por
 ``id`` (``_paquetes_por_id``) en vez de por palabras clave.
 Nadie más lee archivos YAML directamente.
 
+Incluye `recargar()` que limpia los índices y vuelve a llamar
+a `cargar()`, usado por `recargar_config()` para hot-reload
+de la configuración sin reiniciar el agente.
+
 ```python
 def cargar() -> None
+def recargar() -> None  # limpia índices y recarga desde disco
 def obtener_paquetes() -> dict
 def obtener_nombres_paquetes() -> set[str]
 def obtener_primitiva(id: str) -> dict | None
 ```
 
-**Nota:** Los YAML son de solo lectura durante una sesión activa.
-Para editar paquetes mientras el agente corre, se implementará
-`recargar_config()` en Fase 2.
+**Nota:** Con `recargar()` ya no es necesario reiniciar el agente
+para aplicar cambios en los YAML. Basta ejecutar el comando
+``recargar`` (o ``recarga la config`` vía LLM).

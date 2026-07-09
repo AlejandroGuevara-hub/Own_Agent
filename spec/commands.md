@@ -31,7 +31,7 @@ VERBOS = {
         "abrir", "cerrar", "listar", "ajustar",
         "crear", "mover", "eliminar", "programar",
         "esperar", "notificar", "consultar",
-        "subir", "bajar",
+        "subir", "bajar", "recargar",
     },
     "en": set()  # vacío hasta Fase 3
 }
@@ -69,6 +69,18 @@ VERBOS = {
   objetivo: ajustar_volumen
   args: [nivel: 0-100]
   produce: volumen modificado | PARAM_INVALIDO
+
+- id: subir_volumen
+  tipo: funcion
+  objetivo: subir_volumen
+  args: []
+  produce: volumen incrementado 20% | ERROR_APP
+
+- id: bajar_volumen
+  tipo: funcion
+  objetivo: bajar_volumen
+  args: []
+  produce: volumen reducido 20% | ERROR_APP
 
 - id: ajustar_brillo
   tipo: funcion
@@ -141,8 +153,20 @@ VERBOS = {
 - id: notificar
   tipo: funcion
   objetivo: notificar
-  args: [titulo, mensaje, duracion_seg]
+  args: [titulo, mensaje, duracion_seg]  # todos opcionales
   produce: toast de Windows visible al usuario
+  nota: titulo por defecto "Agente Personal", mensaje "Hola mundo",
+        duración "short" (≤5s) o "long" (>5s)
+```
+
+### CONFIGURACIÓN
+
+```yaml
+- id: recargar_config
+  tipo: funcion
+  objetivo: recargar_config
+  args: []
+  produce: configuración YAML y scheduler recargados | ERROR_APP
 ```
 
 ### WEB
@@ -199,5 +223,12 @@ completa coincide con algún nombre de paquete antes de evaluar
 
 Todo comando con `guard: confirmar` interrumpe el flujo del paquete y espera decisión del usuario antes de ejecutar. Si el usuario cancela, se retorna `ACCION_CANCELADA` y el paquete completo se detiene.
 
-Comandos destructivos en Fase 1:
+Comandos destructivos:
 - `eliminar_archivo`
+
+## Recarga de configuración
+
+El comando `recargar` (o vía LLM "recarga la config") invoca `recargar_config()` que:
+1. Detiene el scheduler actual y crea uno nuevo (`scheduler.reiniciar()`)
+2. Limpia los índices de YAML y recarga desde disco (`config.recargar()`)
+3. Permite modificar `primitives.yaml` o `packages.yaml` sin reiniciar el agente

@@ -19,12 +19,12 @@ flowchart LR
     D3 --> D4["functions<br/>ajustar_volumen(), etc."]
     D2 --> OS["🖥️ Windows OS"]
     D4 --> OS
-    D --> E["⏰ scheduler<br/>iniciar/registrar/cancelar"]
+    D --> E["⏰ scheduler<br/>iniciar/reiniciar/registrar/cancelar"]
     B --> F["🔔 notifier<br/>mostrar()/confirmar()"]
     F --> A
     B --> L["📝 logger<br/>registrar()"]
     L -.-> LOG["📁 logs/agente.log"]
-    B --> G["⚙️ config<br/>cargar()"]
+    B --> G["⚙️ config<br/>cargar()/recargar()"]
     G --> H["📁 commands/*.yaml"]
 ```
 
@@ -98,6 +98,7 @@ Texto del flujo:
 9. Por cada accion:
       si tipo == "proceso" → executor.processes lanza subprocess
         · si el objetivo contiene "firefox" con args, agrega "--new-tab"
+        · el tokenizer normaliza \ → / antes de parsear
       si tipo == "funcion" → executor.dispatcher llama función interna
 10. Antes de ejecutar, si accion.confirmacion es True, executor delega
      en notifier.confirmar(); si el usuario cancela retorna ACCION_CANCELADA.
@@ -106,6 +107,10 @@ Texto del flujo:
 12. Si alguna acción falla → construye ErrorAgente → retorna a main.py
 13. main.py pasa resultado o error a notifier.mostrar()
 14. notifier formatea y muestra al usuario
+15. Si el comando es "recargar", executor llama a recargar_config():
+    a. scheduler.reiniciar() — shutdown + nuevo BackgroundScheduler
+    b. config.recargar() — limpia índices y recarga YAML desde disco
+    c. Los cambios en primitives.yaml / packages.yaml se aplican sin reiniciar
 ```
 
 ## Estructura de carpetas

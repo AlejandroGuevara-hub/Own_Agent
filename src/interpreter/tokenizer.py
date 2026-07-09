@@ -25,6 +25,7 @@ def dividir(texto: str) -> list[str]:
         lista vacía. Si falla el parseo con shlex, cae a str.split().
     """
     try:
-        return shlex.split(texto.strip())
+        texto_normalizado = texto.replace("\\", "/")
+        return shlex.split(texto_normalizado)
     except ValueError:
         return texto.strip().split()

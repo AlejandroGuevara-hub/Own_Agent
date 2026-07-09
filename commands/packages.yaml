@@ -38,7 +38,7 @@ paquetes:
       - tipo: "funcion"
         objetivo: "notificar"
         args: ["Jornada iniciada", "Bienvenido, que tengas un buen dia", "5"]
-
+  
   - id: "apagar_todo"
     tipo: "paquete"
     ejecucion: "programada"
@@ -64,3 +64,20 @@ paquetes:
       - tipo: "funcion"
         objetivo: "cerrar_proceso"
         args: ["firefox.exe"]
+  
+  - id: "coding"
+    tipo: "paquete"
+    ejecucion: "instantanea"
+    on_error: "stop"
+    trigger:
+      palabras_clave: ["coding"]
+    acciones:
+      - tipo: "proceso"
+        objetivo: "cmd.exe"
+        args: []
+      - tipo: "proceso"
+        objetivo: "firefox.exe"
+        args: ["https://open.spotify.com"]
+      - tipo: "proceso"
+        objetivo: "firefox.exe"
+        args: ["https://claude.ai"]

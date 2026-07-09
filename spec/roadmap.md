@@ -7,7 +7,7 @@
 **Criterios de completitud:**
 - [x] `config` carga YAML al iniciar sin errores
 - [x] `interpreter` clasifica correctamente primitivas y paquetes
-- [x] `executor` ejecuta las 16 primitivas del catálogo
+- [x] `executor` ejecuta las 19 primitivas del catálogo
 - [x] `scheduler` dispara tareas programadas a la hora correcta
 - [x] `notifier` muestra todos los errores del catálogo en formato uniforme
 - [x] Guard clause funcional en `eliminar_archivo`
@@ -29,14 +29,17 @@
 **Nuevas funcionalidades:**
 - [x] Integración con Ollama (LLM local) en `classifier`
 - [x] El LLM interpreta la intención cuando el texto no coincide con verbos registrados
+- [x] Caché de traducciones LLM para evitar llamadas repetidas
+- [x] Comando `recargar config` que recarga YAML sin reiniciar el agente
 - [ ] Soporte de inglés en `VERBOS["en"]`
-- Comando `recargar config` que recarga YAML sin reiniciar el agente
-- `consultar_web` completo con resultados desde el LLM
+- [ ] `consultar_web` completo con resultados desde el LLM
 
 **Criterios de completitud:**
 - [x] `classifier` tiene fallback a LLM cuando no reconoce el comando
+- [x] `recargar_config()` en `config` sin reiniciar el scheduler
+- [x] `subir_volumen` y `bajar_volumen` como verbos directos
+- [x] `notificar()` con valores por defecto (argumentos opcionales)
 - [ ] Verbos en inglés registrados y funcionales
-- [ ] `recargar_config()` en `config` sin reiniciar el scheduler
 - [ ] `consultar_web` retorna respuesta coherente al usuario
 
 ---

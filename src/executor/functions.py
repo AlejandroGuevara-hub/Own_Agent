@@ -181,9 +181,15 @@ def cerrar_proceso(args: list[str]) -> str | ErrorAgente:
         encontrados = 0
         for proc in psutil.process_iter(["pid", "name"]):
             if proc.info["name"] and proc.info["name"].lower() == nombre.lower():
-                proc.terminate()
-                proc.wait(timeout=3)
-                encontrados += 1
+                try:
+                    proc.terminate()
+                    proc.wait(timeout=3)
+                    encontrados += 1
+                except psutil.NoSuchProcess:
+                    continue
+                except psutil.TimeoutExpired:
+                    proc.kill()
+                    encontrados += 1
         if encontrados == 0:
             return ErrorAgente(
                 codigo="APP_NO_ENCONTRADA",
@@ -452,30 +458,28 @@ def esperar(args: list[str]) -> str | ErrorAgente:
 def notificar(args: list[str]) -> str | ErrorAgente:
     """Muestra una notificación toast en Windows usando ``winotify``.
 
+    Todos los argumentos tienen valores por defecto, por lo que
+    puede llamarse sin parámetros.
+
     Args:
-        args: ``[titulo, mensaje, duracion_seg]`` — ``duracion_seg``
-            determina si la notificación es ``"short"`` (≤5) o ``"long"`` (>5).
+        args: ``[titulo, mensaje, duracion_seg]`` — todos opcionales.
 
     Returns:
         ``"OK"`` si la notificación se mostró correctamente.
 
     Errors:
-        PARAM_INVALIDO: Si hay menos de 3 argumentos.
         ERROR_APP: Si la API de notificaciones falla.
     """
-    if len(args) < 3:
-        return ErrorAgente(
-            codigo="PARAM_INVALIDO",
-            origen="executor/functions",
-            detalle="Parámetros insuficientes para 'notificar'",
-            accion="notificar",
-        )
+    titulo = args[0] if len(args) > 0 else "Agente Personal"
+    mensaje = args[1] if len(args) > 1 else "Hola mundo"
+    duracion = "short"
+    if len(args) > 2:
+        try:
+            duracion = "long" if int(args[2]) > 5 else "short"
+        except ValueError:
+            duracion = "short"
     try:
         from winotify import Notification
-
-        titulo = args[0]
-        mensaje = args[1]
-        duracion = "long" if int(args[2]) > 5 else "short"
 
         toast = Notification(
             app_id="Agente Personal",
@@ -490,8 +494,7 @@ def notificar(args: list[str]) -> str | ErrorAgente:
             codigo="ERROR_APP",
             origen="executor/functions",
             detalle=f"Error al mostrar notificación: {str(e)}",
-            accion="notificar",
-        )
+            accion="notificar")
 
 
 def consultar_web(args: list[str]) -> str | ErrorAgente:
