@@ -14,7 +14,7 @@ Orden de evaluación:
 
 from src.models import ErrorAgente
 from src.config.constants import VERBOS, PREFIJO_PAQUETE
-from src.llm import llm as _llm
+from src.llm import interpreter as _llm
 from src.interpreter import tokenizer as _tokenizer
 
 

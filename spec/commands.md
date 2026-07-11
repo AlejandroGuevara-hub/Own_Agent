@@ -183,7 +183,7 @@ VERBOS = {
   objetivo: consultar_web
   args: [query]
   produce: resultado en consola
-  nota: funcionalidad completa en Fase 2 con LLM
+  nota: busca en DuckDuckGo via ddgs, resume con Ollama y muestra con notifier
 ```
 
 ## Ejemplo de paquete

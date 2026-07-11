@@ -31,16 +31,17 @@
 - [x] El LLM interpreta la intención cuando el texto no coincide con verbos registrados
 - [x] Caché de traducciones LLM para evitar llamadas repetidas
 - [x] Comando `recargar config` que recarga YAML sin reiniciar el agente
+- [x] Búsqueda web con DuckDuckGo + resumen Ollama (`consultar_web`)
+- [x] Separación del módulo llm en interpreter.py y searcher.py
 - [ ] Soporte de inglés en `VERBOS["en"]`
-- [ ] `consultar_web` completo con resultados desde el LLM
 
 **Criterios de completitud:**
 - [x] `classifier` tiene fallback a LLM cuando no reconoce el comando
 - [x] `recargar_config()` en `config` sin reiniciar el scheduler
 - [x] `subir_volumen` y `bajar_volumen` como verbos directos
 - [x] `notificar()` con valores por defecto (argumentos opcionales)
+- [x] `consultar_web` retorna respuesta coherente al usuario (ddgs + Ollama)
 - [ ] Verbos en inglés registrados y funcionales
-- [ ] `consultar_web` retorna respuesta coherente al usuario
 
 ---
 

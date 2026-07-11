@@ -498,17 +498,37 @@ def notificar(args: list[str]) -> str | ErrorAgente:
 
 
 def consultar_web(args: list[str]) -> str | ErrorAgente:
-    """Realiza una consulta web y retorna el resultado.
-
-    Nota: Implementación completa planeada para Fase 2 con integración
-    de LLM local (Ollama). Actualmente es un stub.
+    """Realiza una búsqueda web usando DuckDuckGo + Ollama.
 
     Args:
         args: ``[query]`` — texto de la consulta.
 
     Returns:
-        ``"OK"`` (stub — sin implementación real).
+        ``"OK"`` si la búsqueda se completó y el resultado se mostró.
+
+    Errors:
+        PARAM_INVALIDO: Si no hay consulta.
+        ERROR_APP: Si la búsqueda falla.
     """
+    if len(args) < 1:
+        return ErrorAgente(
+            codigo="PARAM_INVALIDO",
+            origen="executor/functions",
+            detalle="Escribe qué quieres consultar. Ejemplo: consultar web Python",
+            accion="consultar_web")
+    try:
+        from src.llm import searcher
+        from src.notifier import notifier
+        query = " ".join(args)
+        resultado = searcher.consultar(query)
+        notifier.mostrar(resultado)
+        return "OK"
+    except Exception as e:
+        return ErrorAgente(
+            codigo="ERROR_APP",
+            origen="executor/functions",
+            detalle=f"Error al consultar web: {str(e)}",
+            accion="consultar_web")
 
 
 def recargar_config(args: list[str]) -> str | ErrorAgente:

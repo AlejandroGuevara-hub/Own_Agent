@@ -227,10 +227,11 @@ Funciones implementadas actualmente:
 - `programar_alarma` — vía `APScheduler` con trigger cron a una hora específica.
 - `programar_recordatorio` — vía `APScheduler` con trigger cron recurrente
   (`day_of_week`). Acepta días en español (lun,mar,mie,...).
+- `consultar_web` — busca en DuckDuckGo via `ddgs`, obtiene hasta 3 resultados,
+  los envía a Ollama con `SEARCH_PROMPT` para resumir en español, y muestra
+  el resultado con `notifier`.
 - `recargar_config` — detiene el scheduler, crea uno nuevo, y recarga los YAML
   desde disco llamando a `config.recargar()` y `scheduler.reiniciar()`.
-
-Funciones pendientes (stub): `consultar_web`.
 
 ---
 
@@ -250,7 +251,10 @@ def registrar(resultado: str | ErrorAgente, accion: str) -> None
 
 ## /llm
 
-Módulo de interpretación de lenguaje natural vía Ollama.
+Módulo dividido en dos archivos:
+
+### interpreter.py
+Interpretación de lenguaje natural vía Ollama.
 Actúa como **fallback** del classifier: cuando ningún verbo
 registrado ni id de paquete coincide, envía el texto original
 a un modelo local (`llama3.2:3b`) y traduce la intención al
@@ -271,6 +275,17 @@ def interpretar(texto: str) -> str
 # 3. llama a ollama.chat() con SYSTEM_PROMPT
 # 4. guarda resultado en _cache y lo retorna
 # 5. si Exception → retorna "desconocido"
+```
+
+### searcher.py
+Búsqueda web con DuckDuckGo y resumen vía Ollama.
+Usado por `consultar_web()` en functions.py.
+
+```python
+def consultar(query: str) -> str
+# 1. Busca en DuckDuckGo (max 3 resultados)
+# 2. Envía resultados a Ollama con SEARCH_PROMPT
+# 3. Retorna resumen en español (máx 3 oraciones)
 ```
 
 ---

@@ -16,6 +16,8 @@ FORMATO DE RESPUESTA (obligatorio):
 - Todo en minúsculas
 - Sin puntos, comas ni caracteres extra
 - Máximo: verbo + 1 objetivo + 2 parámetros
+- NUNCA respondas con números solos o respuestas directas
+- Si puedes responder la pregunta, tradúcela a: consultar web [pregunta]
 - Si no puedes traducir: responde exactamente DESCONOCIDO
 
 VERBOS DISPONIBLES (elige solo uno):
@@ -50,7 +52,20 @@ EJEMPLOS:
 "creame un archivo hola.txt en C:/carpeta"     → crear C:/carpeta/hola.txt
 "crea un archivo llamado test.py en C:/codigo" → crear C:/codigo/test.py
 "crea el archivo notas.txt en el escritorio"   → crear C:/Users/diego/Desktop/notas.txt
-"creame un archivo"                            → DESCONOCIDO"""
+"creame un archivo"                            → DESCONOCIDO
+"consulta qué es Python"     → consultar web qué es Python
+"busca información sobre IA" → consultar web inteligencia artificial
+"qué es machine learning"    → consultar web machine learning
+"cual es el mejor ejercicio para pecho"  → consultar web mejor ejercicio pecho
+"investiga quien es juan wagner"         → consultar web quien es juan wagner
+"investiga en la web sobre Python"       → consultar web Python
+"busca quien es Elon Musk"               → consultar web quien es Elon Musk
+"qué es la fotosíntesis"                 → consultar web fotosíntesis
+"cuantos centimetros son un pie"         → consultar web cuantos centimetros son un pie
+"cómo funciona un motor"                 → consultar web cómo funciona un motor
+"cuantos mililitros son un litro"     → consultar web cuantos mililitros son un litro
+"cuanto es 100 grados fahrenheit"     → consultar web conversion 100 grados fahrenheit celsius
+"cuanto es una milla en kilometros"   → consultar web cuantos kilometros es una milla"""
 
 
 def interpretar(texto: str) -> str:
