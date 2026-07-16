@@ -18,6 +18,30 @@ from src.config import config as _config
 from src.llm import interpreter as _llm
 from src.interpreter import tokenizer as _tokenizer
 
+STOPWORDS = {
+    "ponme", "pon", "activa", "inicia", "ejecuta", "abre",
+    "en", "a", "el", "la", "los", "las", "un", "una",
+    "de", "del", "al", "con", "para", "por", "y", "o"
+}
+
+
+def _match_paquete(texto: str, nombres_paquetes: set[str]) -> str | None:
+    palabras_usuario = set(texto.lower().split()) - STOPWORDS
+    if not palabras_usuario:
+        return None
+
+    mejor = None
+    mejor_score = 0
+
+    for nombre in nombres_paquetes:
+        palabras_paquete = set(nombre.replace("_", " ").split())
+        score = len(palabras_usuario & palabras_paquete)
+        if score > mejor_score:
+            mejor_score = score
+            mejor = nombre
+
+    return mejor if mejor_score > 0 else None
+
 
 def clasificar(
     tokens: list[str],
@@ -37,7 +61,16 @@ def clasificar(
     if tokens[0] == PREFIJO_PAQUETE:
         id_paquete = " ".join(tokens[1:])
         if id_paquete in nombres_paquetes:
-            return ("paquete", "instantanea", tokens)
+            return ("paquete", "instantanea", [id_paquete])
+
+        id_normalizado = id_paquete.replace(" ", "_")
+        if id_normalizado in nombres_paquetes:
+            return ("paquete", "instantanea", [id_normalizado])
+
+        match = _match_paquete(id_paquete, nombres_paquetes)
+        if match:
+            return ("paquete", "instantanea", [match])
+
         return ErrorAgente(
             codigo="CMD_DESCONOCIDO",
             origen="interpreter/classifier",
@@ -47,6 +80,11 @@ def clasificar(
     frase_completa = " ".join(tokens)
     if frase_completa in nombres_paquetes:
         return ("paquete", "instantanea", tokens)
+
+    match = _match_paquete(frase_completa, nombres_paquetes)
+    if match:
+        tokens_match = [PREFIJO_PAQUETE] + match.split("_")
+        return ("paquete", "instantanea", [match])
 
     token = tokens[0]
     if token in verbos:
