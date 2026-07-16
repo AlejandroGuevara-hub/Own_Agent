@@ -1,0 +1,3 @@
+idioma: "es"
+prefijo_paquete: "paquete"
+modelo_llm: "llama3.2:3b"

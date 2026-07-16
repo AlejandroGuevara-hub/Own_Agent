@@ -7,7 +7,7 @@ dinámicos desde los tokens.
 """
 
 from src.models import Intencion, Accion, ErrorAgente
-from src.config.constants import VERBOS_A_PRIMITIVA, VERBOS_AMBIGUOS
+from src.config.constants import VERBOS_A_PRIMITIVA, VERBOS_A_PRIMITIVA_EN, VERBOS_AMBIGUOS, VERBOS_AMBIGUOS_EN
 from src.config import config
 
 
@@ -17,6 +17,7 @@ def construir(
     ejecucion: str,
 ) -> Intencion | ErrorAgente:
     """Construye el objeto ``Intencion`` a partir de los tokens clasificados.
+    
 
     Flujo interno:
         1. Obtiene el id de primitiva desde ``VERBOS_A_PRIMITIVA``.
@@ -43,6 +44,9 @@ def construir(
         PARAM_INVALIDO: Si un verbo ambiguo no tiene suficientes tokens
             para desambiguar.
     """
+    idioma = config.obtener_setting("idioma", "es")
+    verbos_a_primitiva = VERBOS_A_PRIMITIVA_EN if idioma == "en" else VERBOS_A_PRIMITIVA
+    verbos_ambiguos = VERBOS_AMBIGUOS_EN if idioma == "en" else VERBOS_AMBIGUOS
     if not tokens:
         return ErrorAgente(
             codigo="CMD_VACIO",
@@ -82,7 +86,7 @@ def construir(
 
     verbo = tokens[0]
 
-    if verbo not in VERBOS_A_PRIMITIVA:
+    if verbo not in verbos_a_primitiva:
         return ErrorAgente(
             codigo="CMD_DESCONOCIDO",
             origen="interpreter/builder",
@@ -90,18 +94,18 @@ def construir(
             accion=None,
         )
 
-    id_primitiva = VERBOS_A_PRIMITIVA[verbo]
+    id_primitiva = verbos_a_primitiva[verbo]
 
     if id_primitiva is None:
-        if len(tokens) < 2 or tokens[1] not in VERBOS_AMBIGUOS.get(verbo, {}):
-            opciones = list(VERBOS_AMBIGUOS.get(verbo, {}).keys())
+        if len(tokens) < 2 or tokens[1] not in verbos_ambiguos.get(verbo, {}):
+            opciones = list(verbos_ambiguos.get(verbo, {}).keys())
             return ErrorAgente(
                 codigo="PARAM_INVALIDO",
                 origen="interpreter/builder",
                 detalle=f"'{verbo}' necesita especificar: {opciones}",
                 accion=None,
             )
-        id_primitiva = VERBOS_AMBIGUOS[verbo][tokens[1]]
+        id_primitiva = verbos_ambiguos[verbo][tokens[1]]
         args = tokens[2:]
     else:
         args = tokens[1:]

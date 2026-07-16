@@ -13,7 +13,11 @@ VERBOS: dict[str, set[str]] = {
         "esperar", "notificar", "consultar",
         "subir", "bajar", "recargar",
     },
-    "en": set(),
+    "en": {
+        "open", "close", "list", "adjust", "create",
+        "move", "delete", "schedule", "wait", "notify",
+        "query", "raise", "lower", "reload",
+    },
 }
 
 VERBOS_A_PRIMITIVA: dict[str, str | None] = {
@@ -33,6 +37,23 @@ VERBOS_A_PRIMITIVA: dict[str, str | None] = {
     "recargar":  "recargar_config",
 }
 
+VERBOS_A_PRIMITIVA_EN: dict[str, str | None] = {
+    "open":    "abrir_proceso",
+    "close":   "cerrar_proceso",
+    "list":    "listar_procesos",
+    "adjust":  None,
+    "create":  "crear_archivo",
+    "move":    "mover_archivo",
+    "delete":  "eliminar_archivo",
+    "schedule": None,
+    "wait":    "esperar",
+    "notify":  "notificar",
+    "query":   None,
+    "raise":   "subir_volumen",
+    "lower":   "bajar_volumen",
+    "reload":  "recargar_config",
+}
+
 VERBOS_AMBIGUOS: dict[str, dict[str, str]] = {
     "ajustar": {
         "volumen": "ajustar_volumen",
@@ -45,5 +66,41 @@ VERBOS_AMBIGUOS: dict[str, dict[str, str]] = {
     "consultar": {
         "sistema": "consultar_sistema",
         "web":     "consultar_web",
+    },
+}
+
+VERBOS_AMBIGUOS_EN: dict[str, dict[str, str]] = {
+    "adjust": {
+        "volume": "ajustar_volumen",
+        "brightness": "ajustar_brillo",
+    },
+    "schedule": {
+        "alarm":    "programar_alarma",
+        "reminder": "programar_recordatorio",
+    },
+    "query": {
+        "system": "consultar_sistema",
+        "web":    "consultar_web",
+    },
+}
+
+MENSAJES_ERROR: dict[str, dict[str, str]] = {
+    "es": {
+        "CMD_VACIO":         "No escribiste ningún comando.",
+        "CMD_DESCONOCIDO":   "El comando '{token}' no existe.",
+        "PARAM_INVALIDO":    "El parámetro '{param}' no es válido.",
+        "RUTA_INVALIDA":     "La ruta '{ruta}' no existe.",
+        "APP_NO_ENCONTRADA": "La aplicación '{app}' no está instalada.",
+        "ERROR_APP":         "La aplicación '{app}' reportó un error.",
+        "ACCION_CANCELADA":  "Acción cancelada por el usuario.",
+    },
+    "en": {
+        "CMD_VACIO":         "You didn't type any command.",
+        "CMD_DESCONOCIDO":   "The command '{token}' does not exist.",
+        "PARAM_INVALIDO":    "The parameter '{param}' is not valid.",
+        "RUTA_INVALIDA":     "The path '{ruta}' does not exist.",
+        "APP_NO_ENCONTRADA": "The application '{app}' is not installed.",
+        "ERROR_APP":         "The application '{app}' reported an error.",
+        "ACCION_CANCELADA":  "Action cancelled by user.",
     },
 }

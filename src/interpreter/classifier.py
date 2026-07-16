@@ -14,6 +14,7 @@ Orden de evaluación:
 
 from src.models import ErrorAgente
 from src.config.constants import VERBOS, PREFIJO_PAQUETE
+from src.config import config as _config
 from src.llm import interpreter as _llm
 from src.interpreter import tokenizer as _tokenizer
 
@@ -23,6 +24,8 @@ def clasificar(
     nombres_paquetes: set[str],
     texto_original: str = "",
 ) -> tuple[str, str, list[str]] | ErrorAgente:
+    idioma = _config.obtener_setting("idioma", "es")
+    verbos = VERBOS[idioma]
     if not tokens:
         return ErrorAgente(
             codigo="CMD_VACIO",
@@ -46,7 +49,7 @@ def clasificar(
         return ("paquete", "instantanea", tokens)
 
     token = tokens[0]
-    if token in VERBOS["es"]:
+    if token in verbos:
         return ("primitiva", "instantanea", tokens)
 
     if texto_original:
@@ -59,7 +62,7 @@ def clasificar(
                 accion=None)
 
         tokens_llm = _tokenizer.dividir(comando_llm)
-        if tokens_llm and tokens_llm[0] in VERBOS["es"]:
+        if tokens_llm and tokens_llm[0] in verbos:
             return ("primitiva", "instantanea", tokens_llm)
 
         return ErrorAgente(

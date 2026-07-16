@@ -9,13 +9,15 @@ _primitivas: list[dict] = []
 _paquetes: list[dict] = []
 _paquetes_por_id: dict[str, dict] = {}
 _nombres_paquetes: set[str] = set()
+_settings: dict = {}
 
 
 def cargar() -> None:
     """Carga todos los archivos YAML de ``/commands`` en memoria.
 
-    Lee ``primitives.yaml`` y ``packages.yaml``, construye el índice
-    ``_paquetes_por_id`` para búsqueda rápida por id de paquete.
+    Lee ``primitives.yaml``, ``packages.yaml`` y ``settings.yaml``,
+    construye el índice ``_paquetes_por_id`` para búsqueda rápida
+    por id de paquete y guarda la configuración general en ``_settings``.
     Esta función se invoca una sola vez al iniciar el agente.
 
     Raises:
@@ -24,6 +26,7 @@ def cargar() -> None:
     """
     primitives_path = _COMMANDS_DIR / "primitives.yaml"
     packages_path = _COMMANDS_DIR / "packages.yaml"
+    settings_path = _COMMANDS_DIR / "settings.yaml"
 
     with open(primitives_path, encoding="utf-8") as f:
         data = yaml.safe_load(f)
@@ -41,6 +44,12 @@ def cargar() -> None:
         pkg_id = pkg["id"]
         _paquetes_por_id[pkg_id] = pkg
         _nombres_paquetes.add(pkg_id)
+
+    with open(settings_path, encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+    _settings.clear()
+    if data:
+        _settings.update(data)
 
 
 def obtener_paquetes() -> dict:
@@ -77,13 +86,29 @@ def obtener_primitiva(id: str) -> dict | None:
     return None
 
 
+def obtener_setting(clave: str, defecto=None):
+    """Retorna el valor de una clave de configuración general.
+
+    Los valores se cargan desde ``settings.yaml`` al iniciar el agente.
+
+    Args:
+        clave: Nombre de la clave (ej. ``"idioma"``).
+        defecto: Valor por defecto si la clave no existe.
+
+    Returns:
+        El valor asociado a ``clave``, o ``defecto`` si no se encuentra.
+    """
+    return _settings.get(clave, defecto)
+
+
 def recargar() -> None:
     """Recarga todos los YAML de ``/commands`` sin reiniciar el agente.
 
     Limpia los índices actuales y vuelve a llamar a ``cargar()``.
     """
-    global _primitivas, _paquetes_por_id, _nombres_paquetes
+    global _primitivas, _paquetes_por_id, _nombres_paquetes, _settings
     _primitivas.clear()
     _paquetes_por_id.clear()
     _nombres_paquetes.clear()
+    _settings.clear()
     cargar()

@@ -33,7 +33,7 @@
 - [x] Comando `recargar config` que recarga YAML sin reiniciar el agente
 - [x] Búsqueda web con DuckDuckGo + resumen Ollama (`consultar_web`)
 - [x] Separación del módulo llm en interpreter.py y searcher.py
-- [ ] Soporte de inglés en `VERBOS["en"]`
+- [x] Soporte de inglés en `VERBOS["en"]`
 
 **Criterios de completitud:**
 - [x] `classifier` tiene fallback a LLM cuando no reconoce el comando
@@ -41,7 +41,7 @@
 - [x] `subir_volumen` y `bajar_volumen` como verbos directos
 - [x] `notificar()` con valores por defecto (argumentos opcionales)
 - [x] `consultar_web` retorna respuesta coherente al usuario (ddgs + Ollama)
-- [ ] Verbos en inglés registrados y funcionales
+- [x] Verbos en inglés registrados y funcionales
 
 ---
 
