@@ -22,7 +22,8 @@ FORMATO DE RESPUESTA (obligatorio):
 
 VERBOS DISPONIBLES (elige solo uno):
 abrir, cerrar, listar, ajustar, crear, mover, eliminar,
-programar, esperar, notificar, consultar, subir, bajar, recargar
+programar, esperar, notificar, consultar, subir, bajar,
+recargar, escuchar
 
 EJEMPLOS:
 "abre firefox"              → abrir firefox.exe

@@ -531,6 +531,45 @@ def consultar_web(args: list[str]) -> str | ErrorAgente:
             accion="consultar_web")
 
 
+def escuchar_voz(args: list[str]) -> str | ErrorAgente:
+    """Graba audio del micrófono, transcribe con Whisper y muestra el texto.
+
+    Args:
+        args: ``[duracion_seg]`` — opcional, por defecto 5 segundos.
+
+    Returns:
+        El texto transcrito si se detectó voz.
+    """
+    try:
+        from src.voice import escuchar
+        from src.notifier import notifier
+        duracion = 5
+        if args and args[0].isdigit():
+            duracion = int(args[0])
+        notifier.mostrar(f"Escuchando durante {duracion} segundos...")
+        texto = escuchar(duracion=duracion)
+        if not texto:
+            return ErrorAgente(
+                codigo="ERROR_APP",
+                origen="executor/functions",
+                detalle="No se detectó voz.",
+                accion="escuchar_voz")
+        notifier.mostrar(f"Texto detectado: {texto}")
+        return texto
+    except ImportError as e:
+        return ErrorAgente(
+            codigo="ERROR_APP",
+            origen="executor/functions",
+            detalle=f"Falta librería de voz: {str(e)}. Ejecuta: pip install openai-whisper sounddevice scipy pyttsx3",
+            accion="escuchar_voz")
+    except Exception as e:
+        return ErrorAgente(
+            codigo="ERROR_APP",
+            origen="executor/functions",
+            detalle=f"Error al escuchar voz: {str(e)}",
+            accion="escuchar_voz")
+
+
 def recargar_config(args: list[str]) -> str | ErrorAgente:
     """Recarga la configuración YAML y reinicia el scheduler.
 

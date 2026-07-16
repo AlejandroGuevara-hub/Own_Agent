@@ -57,8 +57,8 @@
 - Soporte de más idiomas en `VERBOS`
 
 **Criterios de completitud:**
-- [ ] Input de voz detectado y convertido a texto correctamente
-- [ ] Output de voz funcional para notificaciones y errores
+- [x] Input de voz detectado y convertido a texto correctamente
+- [x] Output de voz funcional para notificaciones y errores
 - [x] `consultar_sistema` retorna métricas en tiempo real
 - [ ] Editor de paquetes no requiere editar YAML manualmente
 

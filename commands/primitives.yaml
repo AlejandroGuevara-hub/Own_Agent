@@ -227,3 +227,15 @@ primitivas:
       - tipo: "funcion"
         objetivo: "recargar_config"
         args: []
+
+  - id: "escuchar_voz"
+    tipo: "funcion"
+    trigger:
+      palabras_clave: ["escuchar"]
+    schedule:
+      hora: null
+      dias: []
+    acciones:
+      - tipo: "funcion"
+        objetivo: "escuchar_voz"
+        args: []
