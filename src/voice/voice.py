@@ -10,7 +10,7 @@ _engine_tts = None
 def _cargar_modelos() -> None:
     global _modelo_whisper, _engine_tts
     if _modelo_whisper is None:
-        _modelo_whisper = whisper.load_model("tiny")
+        _modelo_whisper = whisper.load_model("base")
     if _engine_tts is None:
         _engine_tts = pyttsx3.init()
 
