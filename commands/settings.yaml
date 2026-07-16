@@ -1,3 +1,7 @@
 idioma: "es"
 prefijo_paquete: "paquete"
 modelo_llm: "llama3.2:3b"
+comando_voz: "voice"
+umbral_silencio: 0.01
+segundos_silencio: 2
+duracion_maxima: 30

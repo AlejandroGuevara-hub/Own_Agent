@@ -10,6 +10,7 @@ from src.interpreter import interpreter
 from src.executor import executor
 from src.models import ErrorAgente
 from src.notifier import notifier
+from src.voice import voice as _voice
 
 
 def iniciar() -> None:
@@ -20,8 +21,13 @@ def iniciar() -> None:
 
 def loop() -> None:
     """Bucle principal de escucha de comandos."""
+    comando_voz = config.obtener_setting("comando_voz", "voice")
     while True:
         texto = input(">>> ")
+        if texto.strip() == f"/{comando_voz}":
+            notifier.mostrar("Escuchando...")
+            texto = _voice.escuchar()
+            notifier.mostrar(f"Escuché: {texto}")
         if not texto:
             continue
         intencion = interpreter.parsear(texto)
